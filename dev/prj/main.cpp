@@ -4,7 +4,7 @@
 #include <format>
 #include <thread>               // Для задержки
 #include <chrono>
-#include "lib/LibComix.hpp"     // Структура для descriptor
+#include "lib/StorageStructures.hpp"     // Структура для descriptor
 
 using json = nlohmann::json;
 
