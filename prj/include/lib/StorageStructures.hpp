@@ -67,7 +67,7 @@ struct LibBook {
     std::vector<std::string> awards;          // Награды и премии, полученные произведением
     std::string notes;                        // Любые дополнительные заметки
     std::vector<std::string> external_ids;    // Внешние идентификаторы (OpenLibrary ID, Wikidata ID и т.п.)
-}
+};
 
 
 /// ========================

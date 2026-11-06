@@ -10,6 +10,14 @@ using json = nlohmann::json;
 
 // URL = https://ranobelib.me/ru/book/203736--seoul-object-story
 
+struct ChapterData {
+    int volume;
+    int chapter;
+    int branch_id;
+    std::string id_url_title = "";
+    std::string translate_teem;
+};
+
 // Инициилизация парсера
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
 
@@ -54,7 +62,7 @@ json get_json_from_url(cpr::Session* session, const std::string& url){
 /// @brief Получить контент главы в виде json
 json get_chapter_content(cpr::Session* session, const std::string& id_url_title, const int& volume, const int& chapter, const std::string& branch_id){
     std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}&branch_id={}", id_url_title, volume, chapter, branch_id);
-    return get_json_from_url(*session, url);
+    return get_json_from_url(session, url);
 }
 
 json get_title_info(cpr::Session* session, const std::string& id_url_title) {
@@ -64,7 +72,7 @@ json get_title_info(cpr::Session* session, const std::string& id_url_title) {
         "https://api.imglib.info/api/manga/{}?fields[0]=background&fields[1]=eng_name&fields[2]=otherNames&fields[3]=summary&fields[4]=releaseDate&fields[5]=country&fields[6]=type_id&fields[7]=caution&fields[8]=views&fields[9]=close_view&fields[10]=rate_avg&fields[11]=rate&fields[12]=genres&fields[13]=tags&fields[14]=teams&fields[15]=user&fields[16]=franchise&fields[17]=authors&fields[18]=publisher&fields[19]=userRating&fields[20]=moderated&fields[21]=metadata&fields[22]=metadata.count&fields[23]=metadata.close_comments&fields[24]=translation_quality_rating&fields[25]=manga_status_id&fields[26]=chap_count&fields[27]=status_id&fields[28]=extra_release_status&fields[29]=artists&fields[30]=format",
         id_url_title
     );
-    return get_json_from_url(*session, url);
+    return get_json_from_url(session, url);
 }
 
 /// @brief Функция для удобства
@@ -72,7 +80,7 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
     std::vector<std::string> out_data;
     if (j.contains(field) && j[field].is_object()){
         for (const auto& [_, value] : j.at(field).items()){
-            out_data.push_back(value.value(subfield, std::string{}).get<std::string>());
+            out_data.push_back(value.value(subfield, std::string{}));
         }
     }
 
@@ -81,10 +89,10 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
 
 
 /// @brief распарсинг json
-LibBook prc_bookInfo_from_json(cpr::Session* session, const CapterData& chapterData, json json_title_info = nullptr){
+LibBook prc_bookInfo_from_json(cpr::Session* session, const ChapterData& chapterData, json json_title_info = nullptr){
 //    json json_chapter_content = get_chapter_content(&session, chapterData.id_url_title, chapterData.volume, chapterData.chapter, chapterData.branch_id);
     if(json_title_info.is_null()){
-        json_title_info = get_title_info(*session, chapterData.id_url_title);
+        json_title_info = get_title_info(session, chapterData.id_url_title);
     }
 
     LibBook bookDescriptor;
@@ -96,10 +104,10 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const CapterData& chapterD
     json j = json_title_info.at("data");
 
     // Оригинальное названеи произведения
-    bookDescriptor.original_title = j.value("name", std::string{}).get<std::string>();
+    bookDescriptor.original_title = j.at("name").get<std::string>();
 
     // Названеи произведения на русском
-    bookDescriptor.title = j.value("rus_name", std::string{}).get<std::string>();
+    bookDescriptor.title = j.at("rus_name").get<std::string>();
 
     // Альтернативные названия
     bookDescriptor.alternative_titles = j.at("otherNames").get<std::vector<std::string>>();
@@ -108,10 +116,10 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const CapterData& chapterD
     //json cover = j.at("cover");
     
     // Возрастное ограничение, в формате текста
-    std::string ageRestriction = j.contains("ageRestriction") ? j["ageRestriction"].value("label", std::string{}).get<std::string>() : std::string{}; //j.at("ageRestriction").value("label", std::string{});
+    std::string ageRestriction = j.contains("ageRestriction") ? j["ageRestriction"].at("label").get<std::string>() : std::string{}; //j.at("ageRestriction").value("label", std::string{});
     
     // Страна происхождения
-    bookDescriptor.country_of_origin_of_the_book = j.contains("type") && j["type"].is_onject() ? j["type"].value("label", std::string{}).get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
+    bookDescriptor.country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
     
     // Содержит словарь, с ключами от 0 и т.д., номера параграфов. Словарь содержит
     // type - "text"
@@ -120,7 +128,7 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const CapterData& chapterD
     json summary = j.at("content");
 
     // Дата публикации
-    bookDescriptor.year_of_publication = j.value("releaseDate", std::string{}).get<std::string>();
+    bookDescriptor.year_of_publication = j.at("releaseDate").get<std::string>();
     
     // Команды превода
     // Содержит словарь, с ключами от 0 и т.д.. 
@@ -137,10 +145,10 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const CapterData& chapterD
     bookDescriptor.tags = extract_strings_from_json_object(j, "tags", "name");
     
     // Издатели
-    bookDescriptor.publisher = {j.contains("publisher") && j["publisher"].is_object() ? j["publisher"].value("name", std::string{}).get<std::string>() : std::string{}};
+    bookDescriptor.publisher = {j.contains("publisher") && j["publisher"].is_object() ? j["publisher"].at("name").get<std::string>() : std::string{}};
 
     // Франшиза. Или же пародия
-    std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].value("name", std::string{}).get<std::string>() : std::string{}};
+    std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].at("name").get<std::string>() : std::string{}};
 
     // Список авторов. тоже стандартный словарь. Нужно парсить поле .{num}.name
     bookDescriptor.authors = extract_strings_from_json_object(j, "authors", "name");
@@ -155,16 +163,9 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const CapterData& chapterD
 /// std::this_thread::sleep_for(std::chrono::seconds(2)); //Сделать задержку на 2 секунды
 // ==========
 
-struct CapterData {
-    int volume;
-    int chapter;
-    int branch_id;
-    std::string id_url_title = "";
-    std::string translate_teems;
-};
 
 int main(){
-    CapterData chapterData{1, 224, 22612, "203736--seoul-object-story"};
+    ChapterData chapterData{1, 224, 22612, "203736--seoul-object-story", ""};
     LibBook bookInfo;
 
     cpr::Url url = {"http://192.168.0.18:8000"};
