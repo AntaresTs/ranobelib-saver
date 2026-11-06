@@ -77,43 +77,60 @@ void processor(cpr::Session* session, const CapterData chapterData){
 
     json j = json_title_info.at("data");
 
-    std::string original_name = j.value("name", "").get<std::string>();
+    // Оригинальное названеи произведения
+    std::string original_name = j.value("name", std::string{}).get<std::string>();
 
-    std::string title_ru = j.value("rus_name", "").get<std::string>();
+    // Названеи произведения на русском
+    std::string title_ru = j.value("rus_name", std::string{}).get<std::string>();
 
     //std::string otherNames = j
-    //
+    // тут несколько типов обложек
     json cover = j.at("cover");
-
-    std::string ageRestriction = j.at("ageRestriction").value("label", std::string{});
+    
+    // Возрастное ограничение, в формате текста
+    std::string ageRestriction = j.contains("ageRestriction") && j["ageRestriction"].is_object() ? j["ageRestriction"].value("label", std::string{}).get<std::string>() : std::string{}; //j.at("ageRestriction").value("label", std::string{});
     
     // Страна происхождения
-    std::string make country = j.at("type").value("label", std::string{});
-
+    std::string make_country = j.contains("type") && j["type"].is_object() ? j["type"].value("label", std::string{}).get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
+    
+    // Содержит словарь, с ключами от 0 и т.д., номера параграфов. Словарь содержит
+    // type - "text"
+    // text - содержание параграфа
     json summary = j.at("content");
 
+    // Дата публикации
     std::string year_of_release = j.value("releaseDate", std::string{});
-
+    
+    // Команды превода
+    // Содержит словарь, с ключами от 0 и т.д.. 
+    // имеет поле name с ником автора
     json translate_teams = j.at("teams");
 
+    // жанры
+    // Словарь с ключами от 0... 
+    // Есть поле name с названием жанра
     json genres = j.at("genres");
-
+    
+    // То же самое что и с полем с жанрами, но с тегами
     json tags = j.at("tags");
-
+    
+    // Издатели
     std::string publisher = j.contains("publisher") && j["publisher"].is_object() ? j["publisher"].value("name", std::string{}) : std::string{};
 
     //j.at("publisher").value("name", std::string{});
+    
+    // Франшиза. Или же пародия
+    std::string franchise = j.contains("franchise") && j["franchise"].is_object() ? j["franchise"].value("name", std::string{}) : std::string{};
 
-    std::string franchise = j.at("franchise").value("name", std::string{});
-
+    // Список авторов. тоже стандартный словарь. Нужно парсить поле .{num}.name
     json authors = j.at("authors");
 
+    // Список художников. тоже стандартный словарь. .{num}.name
     json artists = j.at("artists");
 }
 
 
 /// std::this_thread::sleep_for(std::chrono::seconds(2)); //Сделать задержку на 2 секунды
-
 // ==========
 
 // 
