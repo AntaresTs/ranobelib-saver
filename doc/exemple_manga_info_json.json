@@ -1,0 +1,535 @@
+{
+	"data": {
+		"id": 203736,
+		"name": "Seoul Object Story",
+		"rus_name": "История Объекта из Сеула",
+		"eng_name": "Seoul Object Story",
+		"otherNames": [
+			"서울 오브젝트 이야기"
+		],
+		"model": "manga",
+		"slug": "seoul-object-story",
+		"slug_url": "203736--seoul-object-story",
+		"cover": {
+			"filename": "f61f6945-250d-49c1-b546-9801878ed088",
+			"thumbnail": "https://cover.imglib.info/uploads/cover/seoul-object-story/cover/f61f6945-250d-49c1-b546-9801878ed088_thumb.jpg",
+			"default": "https://cover.imglib.info/uploads/cover/seoul-object-story/cover/f61f6945-250d-49c1-b546-9801878ed088.jpg",
+			"md": "https://cover.imglib.info/uploads/cover/seoul-object-story/cover/f61f6945-250d-49c1-b546-9801878ed088.jpg"
+		},
+		"background": {
+			"filename": "74900981-4444-4210-bd09-068a2b65ab42",
+			"url": "https://cover.imglib.info/uploads/cover/seoul-object-story/background/74900981-4444-4210-bd09-068a2b65ab42.jpg"
+		},
+		"ageRestriction": {
+			"id": 3,
+			"label": "16+"
+		},
+		"site": 3,
+		"type": {
+			"id": 11,
+			"label": "Корея"
+		},
+		"summary": {
+			"type": "doc",
+			"content": [
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "Человечество, когда-то бывшее правителем Земли, потеряло своё превосходство из-за сверхъестественных существ, известных как Объекты."
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "Эта история о реинкарнации в Объект и жизнь без забот в Сеуле такого мира."
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "Альтернативное описание:"
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "Представьте, что вы смотрите в окно из своего дома и видите нечто ужасное. Представьте, что вы улыбаетесь и хлопаете, в то время как вашего коллегу разрывают в клочья и съедают заживо. Представьте, что вы отчаянно продолжаете притворяться, что вы всё ещё высший хищник. Почему? Потому что вы человек. Но, к сожалению, люди больше не находятся на вершине пищевой цепи."
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "В мире, населённом существами, известными как Объекты, люди отчаянно борются за собственное выживание. Некоторые становятся исследователями, пытаясь узнать больше об этих загадочных сущностях, в то время как другие желают воспользоваться их непостижимыми силами. Жадность, любопытство и отчаяние смешиваются в водоворот событий новой истории человечества."
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "Главная героиня – одна из таких исследователей, работающая в Сеульском Институте. Однако, во время заботы за Объектом, Институт попадает под террористическую атаку, в результате чего она погибает."
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "В свои последние мгновения эта девушка думала о том, как она хочет переродиться в качестве Объекта; свободная играть, кушать и отдыхать в своё удовольствие."
+						}
+					]
+				},
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "Но когда она просыпается, то обнаруживает себя... изменившейся, меньше, неспособной говорить, другого цвета. Потому что она больше не человек... а Объект. Бог Смерти. Серый Жнец."
+						}
+					]
+				}
+			]
+		},
+		"close_view": 0,
+		"releaseDate": "2023",
+		"views": {
+			"total": 12142,
+			"short": "12.1 K",
+			"formated": "12 142"
+		},
+		"rating": {
+			"average": "9.3",
+			"averageFormated": "9.3",
+			"votes": 120,
+			"votesFormated": "120",
+			"user": 0
+		},
+		"country": null,
+		"is_licensed": false,
+		"moderated": {
+			"id": 1,
+			"label": "Принято модерацией"
+		},
+		"teams": [
+			{
+				"id": 39832,
+				"slug": "nesushhijveru",
+				"slug_url": "39832--nesushhijveru",
+				"model": "team",
+				"name": "Несущий Веру",
+				"cover": {
+					"filename": "Uqe6alY8hCEE",
+					"thumbnail": "https://cover.imglib.info/uploads/team/nesushhijveru/cover/Uqe6alY8hCEE_thumb.jpg",
+					"default": "https://cover.imglib.info/uploads/team/nesushhijveru/cover/Uqe6alY8hCEE_250x350.jpg",
+					"md": "https://cover.imglib.info/uploads/team/nesushhijveru/cover/Uqe6alY8hCEE_250x350.jpg"
+				},
+				"details": {
+					"branch_id": 22612,
+					"is_active": false,
+					"subscriptions_count": null
+				},
+				"donate_enabled": false,
+				"open_chapter_with_content_key_enabled": null
+			},
+			{
+				"id": 42714,
+				"slug": "notonlyforfun",
+				"slug_url": "42714--notonlyforfun",
+				"model": "team",
+				"name": "NotOnlyForFun",
+				"cover": {
+					"filename": "695fc343-6ae2-4322-8930-3da293102084",
+					"thumbnail": "https://cover.imglib.info/uploads/team/42714/cover/695fc343-6ae2-4322-8930-3da293102084_thumb.jpg",
+					"default": "https://cover.imglib.info/uploads/team/42714/cover/695fc343-6ae2-4322-8930-3da293102084.jpg",
+					"md": "https://cover.imglib.info/uploads/team/42714/cover/695fc343-6ae2-4322-8930-3da293102084.jpg"
+				},
+				"details": {
+					"branch_id": 22611,
+					"is_active": false,
+					"subscriptions_count": null
+				},
+				"donate_enabled": false,
+				"open_chapter_with_content_key_enabled": null
+			}
+		],
+		"genres": [
+			{
+				"id": 43,
+				"name": "Драма",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 47,
+				"name": "Комедия",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 50,
+				"name": "Мистика",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 51,
+				"name": "Научная фантастика",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 52,
+				"name": "Повседневность",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 54,
+				"name": "Приключения",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 58,
+				"name": "Сверхъестественное",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 65,
+				"name": "Трагедия",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 67,
+				"name": "Ужасы",
+				"adult": false,
+				"alert": false
+			},
+			{
+				"id": 69,
+				"name": "Фэнтези",
+				"adult": false,
+				"alert": false
+			}
+		],
+		"tags": [
+			{
+				"id": 82,
+				"name": "Монстры",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 154,
+				"name": "Реинкарнация",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 170,
+				"name": "Магия",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 196,
+				"name": "Призраки / Духи",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 199,
+				"name": "Ниндзя",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 206,
+				"name": "Лоли",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 213,
+				"name": "Путешествие во времени",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 218,
+				"name": "Боги",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 256,
+				"name": "Космос",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 292,
+				"name": "ГГ имба",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 294,
+				"name": "ГГ женщина",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 316,
+				"name": "Мрачный мир",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 321,
+				"name": "Прыжки между мирами",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 322,
+				"name": "Эволюция",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 324,
+				"name": "Главный герой бог",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": true,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 331,
+				"name": "ГГ не человек",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			},
+			{
+				"id": 333,
+				"name": "Бессмертные",
+				"adult": false,
+				"alert": false,
+				"is_media_spoiler": false,
+				"is_general_spoiler": false
+			}
+		],
+		"publisher": [
+			{
+				"id": 5396,
+				"slug": "novelpia",
+				"slug_url": "5396--novelpia",
+				"model": "publisher",
+				"name": "Novelpia",
+				"rus_name": null,
+				"cover": {
+					"filename": null,
+					"thumbnail": "https://cover.imglib.info/static/images/placeholders/user_avatar.png",
+					"default": "https://cover.imglib.info/static/images/placeholders/user_avatar.png",
+					"md": "https://cover.imglib.info/static/images/placeholders/user_avatar.png"
+				},
+				"subscription": {
+					"is_subscribed": false,
+					"source_type": "publisher",
+					"source_id": 5396,
+					"relation": null
+				}
+			}
+		],
+		"franchise": [
+			{
+				"id": 448,
+				"slug": "the-scp-foundation",
+				"slug_url": "448--the-scp-foundation",
+				"model": "franchise",
+				"name": "The SCP Foundation"
+			}
+		],
+		"authors": [
+			{
+				"id": 192127,
+				"slug": "nonrigom",
+				"slug_url": "192127--nonrigom",
+				"model": "people",
+				"name": "nonrigom",
+				"rus_name": null,
+				"alt_name": null,
+				"cover": {
+					"filename": null,
+					"thumbnail": "https://cover.imglib.info/static/images/placeholders/user_avatar.png",
+					"default": "https://cover.imglib.info/static/images/placeholders/user_avatar.png",
+					"md": "https://cover.imglib.info/static/images/placeholders/user_avatar.png"
+				},
+				"subscription": {
+					"is_subscribed": false,
+					"source_type": "people",
+					"source_id": 192127,
+					"relation": null
+				},
+				"confirmed": false,
+				"user_id": 5934010
+			}
+		],
+		"user": {
+			"id": 5433918,
+			"username": "CCDM",
+			"avatar": {
+				"filename": "L5WDJUcBF331.jpg",
+				"url": "https://cover.imglib.info/uploads/users/5433918/L5WDJUcBF331.jpg"
+			},
+			"last_online_at": null,
+			"can_view_profile": true,
+			"can_view_statistics": false,
+			"viewable_statistics_site_ids": [],
+			"can_view_previous_usernames": true,
+			"login_streak": {
+				"last_login_at": null
+			},
+			"login_streak_preferences": {
+				"login_streak_light_icon_style": "light-orange",
+				"login_streak_dark_icon_style": "dark-ember",
+				"login_streak_theme": "auto"
+			},
+			"premium": {
+				"enabled": false
+			}
+		},
+		"content_marking": [
+			{
+				"id": 2,
+				"label": "Содержит упоминание наркотиков",
+				"formulation": "Незаконное потребление наркотических средств, психотропных веществ, их аналогов причиняет вред здоровью, их незаконный оборот запрещен и влечет установленную законодательством ответственность"
+			}
+		],
+		"metadata": {
+			"close_comments": 0,
+			"comments_disabled": {
+				"media": false,
+				"content": false
+			},
+			"count": {
+				"branches": 2,
+				"characters": {
+					"Main": 0,
+					"Supporting": 0
+				},
+				"reviews": {
+					"neutral": 0,
+					"positive": 1,
+					"negative": 0,
+					"all": 1
+				},
+				"relations": 2,
+				"people": 0,
+				"covers": 10
+			},
+			"last_shiki_updated_at": null,
+			"last_anilist_updated_at": null,
+			"anilist_characters_updated_at": null,
+			"anilist_related_updated_at": null,
+			"anilist_status_updated_at": null,
+			"anilist_tags_updated_at": null
+		},
+		"translation_quality_rating": null,
+		"status": {
+			"id": 2,
+			"label": "Завершён"
+		},
+		"items_count": {
+			"uploaded": 308,
+			"total": 0
+		},
+		"scanlateStatus": {
+			"id": 1,
+			"label": "Продолжается"
+		},
+		"extraReleaseStatus": null,
+		"artists": [
+			{
+				"id": 192129,
+				"slug": "seabearsnake",
+				"slug_url": "192129--seabearsnake",
+				"model": "people",
+				"name": "seabearsnake",
+				"rus_name": null,
+				"alt_name": null,
+				"cover": {
+					"filename": null,
+					"thumbnail": "https://cover.imglib.info/static/images/placeholders/user_avatar.png",
+					"default": "https://cover.imglib.info/static/images/placeholders/user_avatar.png",
+					"md": "https://cover.imglib.info/static/images/placeholders/user_avatar.png"
+				},
+				"subscription": {
+					"is_subscribed": false,
+					"source_type": "people",
+					"source_id": 192129,
+					"relation": null
+				},
+				"confirmed": false,
+				"user_id": 5934010
+			}
+		],
+		"format": [],
+		"edition": null,
+		"releaseDateString": "2023 г."
+	},
+	"meta": {
+		"country": "RU"
+	},
+	"server": "debian-mysql10"
+}
+
