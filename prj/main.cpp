@@ -39,9 +39,9 @@ void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
 //     std::cout << "Save Cookie in file: " << filename << std::endl;
 // }
 
-void loadCookies() {
-    return;
-}
+//void loadCookies() {
+//    return;
+//}
 
 
 /// @brief отправка запроса и получение json
@@ -60,6 +60,7 @@ json get_json_from_url(cpr::Session* session, const std::string& url){
 }
 
 /// @brief Получить контент главы в виде json
+/// @paran id_url_title str - Id главы, используемый в ссылке
 json get_chapter_content(cpr::Session* session, const std::string& id_url_title, const int& volume, const int& chapter, const std::string& branch_id){
     std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}&branch_id={}", id_url_title, volume, chapter, branch_id);
     return get_json_from_url(session, url);
@@ -163,20 +164,25 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const ChapterData& chapter
 /// std::this_thread::sleep_for(std::chrono::seconds(2)); //Сделать задержку на 2 секунды
 // ==========
 
+std::string get_slug_url_from_url(std::string url);
 
 int main(){
-    ChapterData chapterData{1, 224, 22612, "203736--seoul-object-story", ""};
-    LibBook bookInfo;
+    std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
+    std::string slug_url = get_slug_url_from_url(url);
+    
 
-    cpr::Url url = {"http://192.168.0.18:8000"};
-
-    cpr::Session session;
-    cpr::Cookies cookies = {
-        {"mangalib_session", ""},
-        {"XSRF-TOKEN", ""}
-    };
-
-    parserInit(&session, cookies);
+//    ChapterData chapterData{1, 224, 22612, "203736--seoul-object-story", ""};
+//    LibBook bookInfo;
+//
+//    cpr::Url url = {"http://192.168.0.18:8000"};
+//
+//    cpr::Session session;
+//    cpr::Cookies cookies = {
+//        {"mangalib_session", ""},
+//        {"XSRF-TOKEN", ""}
+//    };
+//
+//    parserInit(&session, cookies);
 
     //
 
@@ -188,6 +194,18 @@ int main(){
     return 0;
 }
 
+std::string get_slug_url_from_url(std::string url){
+    std::string find_substr = "ranobelib.me/ru/book/";
+    size_t pos = url.find(find_substr);
+
+    if (pos != std::string::npos) {
+        std::string slug_url = url.substr(pos + find_substr.length());
+        return slug_url;
+    } else {
+        std::cerr << "Url error" << std::endl;
+        return "";
+    }
+}
 
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies) {
 
