@@ -99,7 +99,7 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
 }
 
 /// @brief распарсинг json. Запись в структуру информации о книге
-void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, const json json_title_info = json{}){
+void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, json json_title_info = json{}){
 
 //    json json_chapter_content = get_chapter_content(&session, chapterData.id_url_title, chapterData.volume, chapterData.chapter, chapterData.branch_id);
     if(json_title_info.empty()){
@@ -233,7 +233,7 @@ void exemple_1(cpr::Session* session, const std::string& slug_url){
 
     if(rq1.empty() ||  rq2.empty()) {
         std::cout << "==== При получении данных произошла ошибка ====" << std::endl;
-        return 1;
+        return;
     } else {
         std::cout << "==== Данные успешно получены ====" << std::endl;
         std::string chapter_info_cach_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
@@ -249,7 +249,7 @@ void exemple_1(cpr::Session* session, const std::string& slug_url){
 }
 
 /// @breif Получение сырых данных
-std::vector<json> get_data(ModBookInfo* bookDescr){
+std::vector<json> get_data(cpr::Session* session, ModBookInfo* bookDescr){
     ChapterData test_cd (1, 60, 0, ""); 
     std::string cash_titl_info_fname = "title_info_cach_fname.json";
     std::string cash_chapter_info_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
@@ -269,7 +269,7 @@ std::vector<json> get_data(ModBookInfo* bookDescr){
     
     std::vector<json> outd = {chapter_raw_json, title_raw_json};
 
-    return outdl;
+    return outd;
 }
 
 //struct ChapterData {
@@ -287,7 +287,7 @@ int main(){
 
     std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
     fs::path tmp_dir = "tmp";
-    ModBookInfo bookDescr {.slug_url=get_slug_url_from_url(url)}
+    ModBookInfo bookDescr {.slug_url=get_slug_url_from_url(url)};
 
     cpr::Session session;
     cpr::Cookies cookies = {
@@ -299,9 +299,9 @@ int main(){
 
     // ===== тестирование дескриптора
 #if 1
-    std::vector<json> test_data = get_data(&bookDescr);
+    std::vector<json> test_data = get_data(&session, &bookDescr);
 
-    prc_bookInfo_from_json(session, bookDescr, test_data[1]);
+    prc_bookInfo_from_json(&session, &bookDescr, test_data[1]);
 
     std::cout << 
         "title: " << bookDescr.title << "\n"
