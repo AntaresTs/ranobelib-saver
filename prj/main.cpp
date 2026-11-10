@@ -23,27 +23,29 @@ struct ChapterData {
 // Инициилизация парсера
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
 
-// /// @breif Функция для сохранения Cooki
-// void saveCookies(const cpr::Cookies& cookies, const std::string& filename) {
-//     json j = json::object();
-// 
-//     for(const auto& [name, value] : cookies) {
-//         j[name] = value;
-//     }
-// 
-//     std::ofstream file(filename);
-//     if(!file.is_open()){
-//         std::cerr << "Не удалось открыть файл для записи: " << filename << std::endl;
-//         return;
-//     }
-// 
-//     file << j.dump(2);
-//     std::cout << "Save Cookie in file: " << filename << std::endl;
-// }
+#if 0
+ /// @breif Функция для сохранения Cooki
+ void saveCookies(const cpr::Cookies& cookies, const std::string& filename) {
+     json j = json::object();
+ 
+     for(const auto& [name, value] : cookies) {
+         j[name] = value;
+     }
+ 
+     std::ofstream file(filename);
+     if(!file.is_open()){
+         std::cerr << "Не удалось открыть файл для записи: " << filename << std::endl;
+         return;
+     }
+ 
+     file << j.dump(2);
+     std::cout << "Save Cookie in file: " << filename << std::endl;
+ }
 
-//void loadCookies() {
-//    return;
-//}
+void loadCookies() {
+    return;
+}
+#endif
 
 
 /// @brief отправка запроса и получение json
@@ -64,7 +66,7 @@ json get_json_from_url(cpr::Session* session, const std::string& url){
 
 /// @brief Получить контент главы в виде json
 /// @paran id_url_title str - Id главы, используемый в ссылке
-json get_chapter_content(cpr::Session* session, const std::string& slug_url, const int& volume, const int& chapter, const std::string& branch_id = ""){
+json get_chapter_content(cpr::Session* session, const std::string& slug_url, const int& volume, const int& chapter){
     //std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}&branch_id={}", slug_url, volume, chapter, branch_id);
     std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}", slug_url, volume, chapter);
     return get_json_from_url(session, url);
@@ -94,9 +96,9 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
 }
 
 /// @brief распарсинг json. Запись в структуру информации о книге
-LibBook prc_bookInfo_from_json(cpr::Session* session, const std::string& slug_url, json json_title_info = nullptr){
+LibBook prc_bookInfo_from_json(cpr::Session* session, const std::string& slug_url, json json_title_info = json{}){
 //    json json_chapter_content = get_chapter_content(&session, chapterData.id_url_title, chapterData.volume, chapterData.chapter, chapterData.branch_id);
-    if(json_title_info.is_null()){
+    if(json_title_info.empty()){
         json_title_info = get_title_info(session, slug_url);
     }
 
