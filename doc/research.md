@@ -1,4 +1,17 @@
+# Примечания
+Куки `mangalib_session` и `XSRF-TOKEN` представляют собой закодированный в base64 json
 
+```
+{
+    "iv":"",
+    "value":"",
+    "mac":"",
+    "tag":""
+}
+```
+
+
+# Парсинг
 Список всех глав
  - **GET** `https://api.imglib.info/api/manga/203736--seoul-object-story/chapters?volume={VOLUME}&number={CHAPTER_NUM}`
     - Request: json
