@@ -11,10 +11,12 @@
 ```
 
 
+
 # Парсинг
-Список всех глав
- - **GET** `https://api.imglib.info/api/manga/203736--seoul-object-story/chapters?volume={VOLUME}&number={CHAPTER_NUM}`
-    - Request: json
+## Список глав 
+- Метод **GET**
+- Путь: `https://api.imglib.info/api/manga/203736--seoul-object-story/chapters?volume={VOLUME}&number={CHAPTER_NUM}`
+- Request: json
 
 
 При запросе контента главы, есть и такое структуры. (type: `blockquote`)
