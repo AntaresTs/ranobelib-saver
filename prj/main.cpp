@@ -101,74 +101,75 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
 }
 
 /// @brief распарсинг json. Запись в структуру информации о книге
-LibBook prc_bookInfo_from_json(cpr::Session* session, const std::string& slug_url, json json_title_info = json{}){
+void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, json json_title_info = json{}){
+
 //    json json_chapter_content = get_chapter_content(&session, chapterData.id_url_title, chapterData.volume, chapterData.chapter, chapterData.branch_id);
     if(json_title_info.empty()){
-        json_title_info = get_title_info(session, slug_url);
+        json_title_info = get_title_info(session, bookDescriptor->slug_url);
     }
-
-    LibBook bookDescriptor;
-
-    bookDescriptor.languages.push_back("ru");
-
-    // ===========
 
     json j = json_title_info.at("data");
 
+
+    // Пока сойдет и так
+    bookDescriptor->languages.push_back("ru");
+
+    /// ==== Что имеет поле в book descriptor ==== 
+    ///
     // Оригинальное названеи произведения
-    bookDescriptor.original_title = j.at("name").get<std::string>();
+    bookDescriptor->original_title = j.at("name").get<std::string>();
 
     // Названеи произведения на русском
-    bookDescriptor.title = j.at("rus_name").get<std::string>();
+    bookDescriptor->title = j.at("rus_name").get<std::string>();
 
     // Альтернативные названия
-    bookDescriptor.alternative_titles = j.at("otherNames").get<std::vector<std::string>>();
+    bookDescriptor->alternative_titles = j.at("otherNames").get<std::vector<std::string>>();
 
-    // тут несколько типов обложек
-    //json cover = j.at("cover");
-    
-    // Возрастное ограничение, в формате текста
-    std::string ageRestriction = j.contains("ageRestriction") ? j["ageRestriction"].at("label").get<std::string>() : std::string{}; //j.at("ageRestriction").value("label", std::string{});
-    
     // Страна происхождения
-    bookDescriptor.country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
+    bookDescriptor->country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
+
+    // Дата публикации
+    bookDescriptor->year_of_publication = j.at("releaseDate").get<std::string>();
+
+    // жанры
+    // Словарь с ключами от 0... 
+    // Есть поле name с названием жанра
+    bookDescriptor->genres = extract_strings_from_json_object(j, "genres", "name");
+    
+    // То же самое что и с полем с жанрами, но с тегами
+    bookDescriptor->tags = extract_strings_from_json_object(j, "tags", "name");
+    
+    // Издатели
+    bookDescriptor->publisher = {j.contains("publisher") && j["publisher"].is_object() ? j["publisher"].at("name").get<std::string>() : std::string{}};
+
+    // Список авторов. тоже стандартный словарь. Нужно парсить поле .{num}.name
+    bookDescriptor->authors = extract_strings_from_json_object(j, "authors", "name");
+
+    // Список художников. тоже стандартный словарь. .{num}.name
+    bookDescriptor->artists = extract_strings_from_json_object(j, "artists", "name");
+
+    /// ==== Что не имеет поле в book descriptor ===
     
     // Содержит словарь, с ключами от 0 и т.д., номера параграфов. Словарь содержит
     // type - "text"
     // text - содержание параграфа
     // TODO: !
     json summary = j.at("content");
-
-    // Дата публикации
-    bookDescriptor.year_of_publication = j.at("releaseDate").get<std::string>();
     
+    // тут несколько типов обложек
+    //json cover = j.at("cover");
+
+    // Возрастное ограничение, в формате текста
+    std::string ageRestriction = j.contains("ageRestriction") ? j["ageRestriction"].at("label").get<std::string>() : std::string{}; //j.at("ageRestriction").value("label", std::string{});
+
     // Команды превода
     // Содержит словарь, с ключами от 0 и т.д.. 
     // имеет поле name с ником автора
     std::vector<std::string> translate_teems = extract_strings_from_json_object(j, "teams", "name");
 
-
-    // жанры
-    // Словарь с ключами от 0... 
-    // Есть поле name с названием жанра
-    bookDescriptor.genres = extract_strings_from_json_object(j, "genres", "name");
-    
-    // То же самое что и с полем с жанрами, но с тегами
-    bookDescriptor.tags = extract_strings_from_json_object(j, "tags", "name");
-    
-    // Издатели
-    bookDescriptor.publisher = {j.contains("publisher") && j["publisher"].is_object() ? j["publisher"].at("name").get<std::string>() : std::string{}};
-
     // Франшиза. Или же пародия
     std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].at("name").get<std::string>() : std::string{}};
 
-    // Список авторов. тоже стандартный словарь. Нужно парсить поле .{num}.name
-    bookDescriptor.authors = extract_strings_from_json_object(j, "authors", "name");
-
-    // Список художников. тоже стандартный словарь. .{num}.name
-    bookDescriptor.artists = extract_strings_from_json_object(j, "artists", "name");
-
-    return bookDescriptor;
 }
 
 
