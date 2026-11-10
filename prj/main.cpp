@@ -17,7 +17,6 @@ struct ChapterData {
     int volume;
     int chapter;
     int branch_id;
-    std::string id_url_title = "";
     std::string translate_teem;
 };
 
@@ -187,7 +186,58 @@ void get_req(cpr::Session* session, const std::string& url){
 
 }
 
+#if 1
+int cash_prc(const std::string& fname, json* load_or_get_data = null) {
+    /// @breaf Работа с кешем. Функция для отлаживания работы с json, чтобы не отправлять запросы к сайту
+    
+    fs::path cash_dir = "tmp" / "cash";
+    fs::create_directories(tmp_dir);
+    fs::path file_path = cash_dir / fname;
+
+    if(load_or_get_data || load_or_get_data->empty()){
+        // Экспорт из файлов 
+        std::ofstream file (file_path);
+
+        if (file.is_open()){
+            file >> *load_or_get_data;
+            file.close();
+            std::cout << "Кэш из файла " << fname << " экспортирован" << std::endl;
+            return 1;
+
+        } else {
+            std::cerr << "При создании кеш файла, не удалось открыть файл: " << fname << std::endl;
+            return 0;
+        }
+
+    } else {
+        // Импорт в файл
+        std::ifstream file (file_path);
+
+        if (file.is_open()){
+            file << load_or_get_data->dump(4);
+            std::cout << "Кэш в файл " << fname << " импортировн" << std::endl;
+            return 1;
+
+        } else {
+            std::cerr << "При создании кеш файла, не удалось открыть файл: " << fname << std::endl;
+            return 0;
+
+        }
+    }
+    
+}
+#endif
+
+//struct ChapterData {
+//    int volume;
+//    int chapter;
+//    int branch_id;
+//    std::string translate_teem;
+//};
+
 int main(){
+    ChapterData test_cd (1, 60, 0, ""); 
+
     std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
     std::string slug_url = get_slug_url_from_url(url);
     fs::path tmp_dir = "tmp";
@@ -204,8 +254,10 @@ int main(){
     };
 
     parserInit(&session, cookies);
+    
+    
 
-#if 0
+#if 1
 
     json rq1 = get_title_info(&session, slug_url);
     json rq2 = get_chapter_content(&session, slug_url, 1, 60);
@@ -214,18 +266,13 @@ int main(){
         std::cout << "==== При получении данных произошла ошибка ====" << std::endl;
         return 1;
     } else {
-        std::cout << "Данные получены" << std::endl;
+        std::cout << "==== Данные успешно получены ====" << std::endl;
+        std::string chapter_info_cach_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
+
+        cash_prc("title_info_cach_fname.json", &rq1);
+        cash_prc(chapter_info_cach_fname, &rq2);
     }
 
-
-    fs::create_directory(tmp_dir);
-    std::ofstream f_test(tmp_dir / "f_test.json");
-    
-    if (f_test.is_open()) {
-        f_test << rq1.dump(4) << std::endl;
-        f_test << "\n====================\n" << std::endl;
-        f_test << rq1.dump(4) << std::endl;
-    }
 
 #endif
 
