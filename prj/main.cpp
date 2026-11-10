@@ -20,6 +20,11 @@ struct ChapterData {
     std::string translate_teem;
 };
 
+struct ModBookInfo : LibBook {
+    std::string slug_url;
+    std::vector<ChapterData> chapters;
+}; 
+
 // Инициилизация парсера
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
 
@@ -244,6 +249,10 @@ void exemple_1(cpr::Session* session, const std::string& slug_url){
     }
 }
 
+/// @breif Получение сырх данных
+json get_data(const std::string type){
+    
+}
 
 //struct ChapterData {
 //    int volume;
@@ -251,6 +260,10 @@ void exemple_1(cpr::Session* session, const std::string& slug_url){
 //    int branch_id;
 //    std::string translate_teem;
 //};
+
+struct ModBookInfo : LibBook {
+    std::string slug_url;
+}; 
 
 int main(){
 
