@@ -249,9 +249,28 @@ void exemple_1(cpr::Session* session, const std::string& slug_url){
     }
 }
 
-/// @breif Получение сырх данных
-json get_data(const std::string type){
+/// @breif Получение сырых данных
+std::vector<json> get_data(ModBookInfo* bookDescr){
+    ChapterData test_cd (1, 60, 0, ""); 
+    std::string cash_titl_info_fname = "title_info_cach_fname.json";
+    std::string cash_chapter_info_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
+   
+    json chapter_raw_json = cash_prc(cash_titl_info_fname);
+    json title_raw_json = cash_prc(cash_chapter_info_fname);
+
+    if(chapter_raw_json.empty()){
+        json rq2 = get_chapter_content(session, bookDescr->slug_url, test_cd.volume, test_cd.chapter);
+        cash_prc(cash_chapter_info_fname, rq2);
+    }
+
+    if(title_raw_json.empty()){
+        json rq1 = get_title_info(session, bookDescr->slug_url);
+        cash_prc(cash_titl_info_fname, rq1);
+    }
     
+    std::vector<json> outd = {chapter_raw_json, title_raw_json};
+
+    return outdl;
 }
 
 //struct ChapterData {
@@ -261,19 +280,15 @@ json get_data(const std::string type){
 //    std::string translate_teem;
 //};
 
-struct ModBookInfo : LibBook {
-    std::string slug_url;
-}; 
+//struct ModBookInfo : LibBook {
+//    std::string slug_url;
+//}; 
 
 int main(){
 
     std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
-    std::string slug_url = get_slug_url_from_url(url);
     fs::path tmp_dir = "tmp";
-
-//    LibBook bookInfo;
-//
-//    cpr::Url test_url = {"http://192.168.0.18:8000"};
+    ModBookInfo bookDescr {.slug_url=get_slug_url_from_url(url)}
 
     cpr::Session session;
     cpr::Cookies cookies = {
@@ -282,7 +297,11 @@ int main(){
     };
 
     parserInit(&session, cookies);
-    
+    // =====
+
+    std::vector<json> test_data = get_data(&bookDescr);
+
+    // =====
     return 0;
 }
 
