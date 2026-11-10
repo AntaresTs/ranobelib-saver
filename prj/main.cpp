@@ -57,6 +57,7 @@ json get_json_from_url(cpr::Session* session, const std::string& url){
 
     } else {
         std::cerr << "Pars error: " << resp.status_code << std::endl;
+        std::cerr << "Error text:\n" << resp.text << std::endl;
         return json::object();
     }
 
@@ -170,11 +171,26 @@ LibBook prc_bookInfo_from_json(cpr::Session* session, const std::string& slug_ur
 
 std::string get_slug_url_from_url(std::string url);
 
+
+void get_req(cpr::Session* session, const std::string& url){
+    session->SetUrl(url);
+    cpr::Response resp = session->Get();
+   
+    if(resp.status_code == 200){
+        std::cerr << "Resp:\n" << resp.text << std::endl;
+
+    } else {
+        std::cerr << "Pars error: " << resp.status_code << std::endl;
+//        std::cerr << "Error text:\n" << resp.text << std::endl;
+    }
+
+
+}
+
 int main(){
     std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
     std::string slug_url = get_slug_url_from_url(url);
     fs::path tmp_dir = "tmp";
-    
 
 //    ChapterData chapterData{1, 224, 22612, "203736--seoul-object-story", ""};
 //    LibBook bookInfo;
@@ -189,17 +205,20 @@ int main(){
 
     parserInit(&session, cookies);
 
-    std::cout << "===== Тестовая отправка запроса ====" << std::endl;
+#if 0
+
     json rq1 = get_title_info(&session, slug_url);
     json rq2 = get_chapter_content(&session, slug_url, 1, 60);
 
-    std::cout << "==== Получение данных прошло успешно ====" << std::endl;
+    if(rq1.empty() ||  rq2.empty()) {
+        std::cout << "==== При получении данных произошла ошибка ====" << std::endl;
+        return 1;
+    } else {
+        std::cout << "Данные получены" << std::endl;
+    }
+
 
     fs::create_directory(tmp_dir);
-    
-    //std::ofstream f_title_info(tmp_dir + "/title_info.json");
-    //std::ofstream f_chapter_info(tmp_dir + "/chapter_info.json");
-
     std::ofstream f_test(tmp_dir / "f_test.json");
     
     if (f_test.is_open()) {
@@ -208,15 +227,7 @@ int main(){
         f_test << rq1.dump(4) << std::endl;
     }
 
-
-
-
-    //
-
-    // ===== Окончательная сборка парсера
-
-    // std::cout << "Status: " << resp1.status_code << std::endl;
-    // std::cout << json::parse(resp1.text).dump(2) << std::endl;
+#endif
 
     return 0;
 }
@@ -237,12 +248,14 @@ std::string get_slug_url_from_url(std::string url){
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies) {
 
     cpr::Header headers = {
+        {"Host", "api.imglib.info"},
         {"User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:154.0) Gecko/20100101 Firefox/154.0"},
+        {"Accept-Language", "en-US,en;q=0.9"},
+        {"Accept-Encoding", "gzip, deflate, br, zstd"},
+        {"Referer", "https://ranobelib.me/"},
         {"Origin", "https://ranobelib.me"},
         {"Content-Type", "application/json"},
-        {"Host", "api.imglib.info"},
-        {"Accept-Language", "en-US,en;q=0.9"},
-        {"Accept-Encoding", "gzip, deflate, br, zstd"}
+        {"Site-Id", "3"}
     };
 
     session->SetHeader(headers);
