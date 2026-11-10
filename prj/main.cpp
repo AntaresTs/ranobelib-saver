@@ -221,6 +221,7 @@ json cash_prc(const std::string& fname, const json& load_data = json{}) {
 }
 
 /// @brief пример парсинга данных и записи их в кэш.
+/// TODO: Реализовать динамическую задержку!
 void exemple_1(cpr::Session* session, const std::string& slug_url){
     ChapterData test_cd (1, 60, 0, ""); 
     json rq1 = get_title_info(session, slug_url);
