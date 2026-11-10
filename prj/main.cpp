@@ -4,9 +4,12 @@
 #include <format>
 #include <thread>               // Для задержки
 #include <chrono>
+#include <filesystem>
+#include <fstream>
 #include "lib/StorageStructures.hpp"     // Структура для descriptor
 
 using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 // URL = https://ranobelib.me/ru/book/203736--seoul-object-story
 
@@ -54,24 +57,26 @@ json get_json_from_url(cpr::Session* session, const std::string& url){
 
     } else {
         std::cerr << "Pars error: " << resp.status_code << std::endl;
-        return 1;
+        return json::object();
     }
 
 }
 
 /// @brief Получить контент главы в виде json
 /// @paran id_url_title str - Id главы, используемый в ссылке
-json get_chapter_content(cpr::Session* session, const std::string& id_url_title, const int& volume, const int& chapter, const std::string& branch_id){
-    std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}&branch_id={}", id_url_title, volume, chapter, branch_id);
+json get_chapter_content(cpr::Session* session, const std::string& slug_url, const int& volume, const int& chapter, const std::string& branch_id = ""){
+    //std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}&branch_id={}", slug_url, volume, chapter, branch_id);
+    std::string url = std::format("https://api.imglib.info/api/manga/{}/chapter?volume={}&number={}", slug_url, volume, chapter);
     return get_json_from_url(session, url);
 }
 
-json get_title_info(cpr::Session* session, const std::string& id_url_title) {
+// Получение информации о книге
+json get_title_info(cpr::Session* session, const std::string& slug_url) {
     // 203736--seoul-object-story
 
     std::string url = std::format(
         "https://api.imglib.info/api/manga/{}?fields[0]=background&fields[1]=eng_name&fields[2]=otherNames&fields[3]=summary&fields[4]=releaseDate&fields[5]=country&fields[6]=type_id&fields[7]=caution&fields[8]=views&fields[9]=close_view&fields[10]=rate_avg&fields[11]=rate&fields[12]=genres&fields[13]=tags&fields[14]=teams&fields[15]=user&fields[16]=franchise&fields[17]=authors&fields[18]=publisher&fields[19]=userRating&fields[20]=moderated&fields[21]=metadata&fields[22]=metadata.count&fields[23]=metadata.close_comments&fields[24]=translation_quality_rating&fields[25]=manga_status_id&fields[26]=chap_count&fields[27]=status_id&fields[28]=extra_release_status&fields[29]=artists&fields[30]=format",
-        id_url_title
+        slug_url
     );
     return get_json_from_url(session, url);
 }
@@ -88,12 +93,11 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
     return out_data;
 }
 
-
-/// @brief распарсинг json
-LibBook prc_bookInfo_from_json(cpr::Session* session, const ChapterData& chapterData, json json_title_info = nullptr){
+/// @brief распарсинг json. Запись в структуру информации о книге
+LibBook prc_bookInfo_from_json(cpr::Session* session, const std::string& slug_url, json json_title_info = nullptr){
 //    json json_chapter_content = get_chapter_content(&session, chapterData.id_url_title, chapterData.volume, chapterData.chapter, chapterData.branch_id);
     if(json_title_info.is_null()){
-        json_title_info = get_title_info(session, chapterData.id_url_title);
+        json_title_info = get_title_info(session, slug_url);
     }
 
     LibBook bookDescriptor;
@@ -169,20 +173,43 @@ std::string get_slug_url_from_url(std::string url);
 int main(){
     std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
     std::string slug_url = get_slug_url_from_url(url);
+    fs::path tmp_dir = "tmp";
     
 
 //    ChapterData chapterData{1, 224, 22612, "203736--seoul-object-story", ""};
 //    LibBook bookInfo;
 //
-//    cpr::Url url = {"http://192.168.0.18:8000"};
-//
-//    cpr::Session session;
-//    cpr::Cookies cookies = {
-//        {"mangalib_session", ""},
-//        {"XSRF-TOKEN", ""}
-//    };
-//
-//    parserInit(&session, cookies);
+//    cpr::Url test_url = {"http://192.168.0.18:8000"};
+
+    cpr::Session session;
+    cpr::Cookies cookies = {
+        {"mangalib_session", ""},
+        {"XSRF-TOKEN", ""}
+    };
+
+    parserInit(&session, cookies);
+
+    std::cout << "===== Тестовая отправка запроса ====" << std::endl;
+    json rq1 = get_title_info(&session, slug_url);
+    json rq2 = get_chapter_content(&session, slug_url, 1, 60);
+
+    std::cout << "==== Получение данных прошло успешно ====" << std::endl;
+
+    fs::create_directory(tmp_dir);
+    
+    //std::ofstream f_title_info(tmp_dir + "/title_info.json");
+    //std::ofstream f_chapter_info(tmp_dir + "/chapter_info.json");
+
+    std::ofstream f_test(tmp_dir / "f_test.json");
+    
+    if (f_test.is_open()) {
+        f_test << rq1.dump(4) << std::endl;
+        f_test << "\n====================\n" << std::endl;
+        f_test << rq1.dump(4) << std::endl;
+    }
+
+
+
 
     //
 
