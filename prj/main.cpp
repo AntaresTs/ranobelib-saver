@@ -11,7 +11,7 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-// URL = https://ranobelib.me/ru/book/203736--seoul-object-story
+
 
 struct ChapterData {
     int volume;
@@ -186,47 +186,61 @@ void get_req(cpr::Session* session, const std::string& url){
 
 }
 
-#if 1
-int cash_prc(const std::string& fname, json* load_or_get_data = null) {
-    /// @breaf Работа с кешем. Функция для отлаживания работы с json, чтобы не отправлять запросы к сайту
-    
-    fs::path cash_dir = "tmp" / "cash";
-    fs::create_directories(tmp_dir);
+json cash_prc(const std::string& fname, const json& load_data = json{}) {
+    /// @brief Работа с кешем. Функция для отлаживания работы с json, чтобы не отправлять запросы к сайту
+
+    fs::path cash_dir = "tmp/cash";
+    fs::create_directories(cash_dir);
     fs::path file_path = cash_dir / fname;
 
-    if(load_or_get_data || load_or_get_data->empty()){
-        // Экспорт из файлов 
-        std::ofstream file (file_path);
-
-        if (file.is_open()){
-            file >> *load_or_get_data;
-            file.close();
-            std::cout << "Кэш из файла " << fname << " экспортирован" << std::endl;
-            return 1;
-
-        } else {
-            std::cerr << "При создании кеш файла, не удалось открыть файл: " << fname << std::endl;
-            return 0;
+    if (load_data.empty()) {
+        // Чтение из кеша
+        std::ifstream file(file_path);
+        if (!file.is_open()) {
+            std::cerr << "Не удалось открыть кеш-файл для чтения: " << fname << std::endl;
+            return json{};
         }
+        json out_json;
+        file >> out_json;
+        std::cout << "Кэш из файла " << fname << " экспортирован" << std::endl;
+        return out_json;
 
     } else {
-        // Импорт в файл
-        std::ifstream file (file_path);
-
-        if (file.is_open()){
-            file << load_or_get_data->dump(4);
-            std::cout << "Кэш в файл " << fname << " импортировн" << std::endl;
-            return 1;
-
-        } else {
+        // Запись в кеш
+        std::ofstream file(file_path);
+        if (!file.is_open()) {
             std::cerr << "При создании кеш файла, не удалось открыть файл: " << fname << std::endl;
-            return 0;
-
+            return load_data;
         }
+        file << load_data.dump(4);
+        std::cout << "Кэш в файл " << fname << " импортирован" << std::endl;
+        return load_data;
     }
-    
 }
-#endif
+
+/// @brief пример парсинга данных и записи их в кэш.
+void exemple_1(cpr::Session* session, const std::string& slug_url){
+    ChapterData test_cd (1, 60, 0, ""); 
+    json rq1 = get_title_info(session, slug_url);
+    json rq2 = get_chapter_content(session, slug_url, 1, 60);
+
+    if(rq1.empty() ||  rq2.empty()) {
+        std::cout << "==== При получении данных произошла ошибка ====" << std::endl;
+        return 1;
+    } else {
+        std::cout << "==== Данные успешно получены ====" << std::endl;
+        std::string chapter_info_cach_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
+
+        cash_prc("title_info_cach_fname.json", rq1);
+        cash_prc(chapter_info_cach_fname, rq2);
+
+        std::cout << "Данные закешированны" << std::endl;
+
+        // Демонстрация получения данных из кэша
+        std::cout << cash_prc(chapter_info_cach_fname) << std::endl;
+    }
+}
+
 
 //struct ChapterData {
 //    int volume;
@@ -236,13 +250,11 @@ int cash_prc(const std::string& fname, json* load_or_get_data = null) {
 //};
 
 int main(){
-    ChapterData test_cd (1, 60, 0, ""); 
 
     std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
     std::string slug_url = get_slug_url_from_url(url);
     fs::path tmp_dir = "tmp";
 
-//    ChapterData chapterData{1, 224, 22612, "203736--seoul-object-story", ""};
 //    LibBook bookInfo;
 //
 //    cpr::Url test_url = {"http://192.168.0.18:8000"};
@@ -255,27 +267,6 @@ int main(){
 
     parserInit(&session, cookies);
     
-    
-
-#if 1
-
-    json rq1 = get_title_info(&session, slug_url);
-    json rq2 = get_chapter_content(&session, slug_url, 1, 60);
-
-    if(rq1.empty() ||  rq2.empty()) {
-        std::cout << "==== При получении данных произошла ошибка ====" << std::endl;
-        return 1;
-    } else {
-        std::cout << "==== Данные успешно получены ====" << std::endl;
-        std::string chapter_info_cach_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
-
-        cash_prc("title_info_cach_fname.json", &rq1);
-        cash_prc(chapter_info_cach_fname, &rq2);
-    }
-
-
-#endif
-
     return 0;
 }
 
