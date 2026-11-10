@@ -12,7 +12,7 @@ CXXFLAGS := $(CXXSTD) $(WARN) $(INC) $(LIBS)
 # ==================== Исходники и цели ====================
 SRC      := main.cpp
 OBJ      := $(SRC:.cpp=.o)
-TARGET   := main
+TARGET   := main.run
 
 # ==================== Правила ====================
 all: $(TARGET)
