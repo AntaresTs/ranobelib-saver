@@ -118,16 +118,16 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     bookDescriptor->original_title = j.at("name").get<std::string>();
 
     // Названеи произведения на русском
-    bookDescriptor->title = j.at("rus_name").get<std::string>();
+    bookDescriptor->title = j.contains("rus_name") && j["rus_name"].is_object() ? j.at("rus_name").get<std::string>() : std::string{};
 
     // Альтернативные названия
-    bookDescriptor->alternative_titles = j.at("otherNames").get<std::vector<std::string>>();
+    bookDescriptor->alternative_titles = j.contains("otherNames") && j["otherNames"].is_object() ? j.at("otherNames").get<std::vector<std::string>>() : std::vector<std::string>{};
 
     // Страна происхождения
     bookDescriptor->country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
 
     // Дата публикации
-    bookDescriptor->year_of_publication = j.at("releaseDate").get<std::string>();
+    bookDescriptor->year_of_publication = j.contains("releaseDate") && j["releaseDate"].is_object() ? j.at("releaseDate").get<std::string>() : std::string{};
 
     // жанры
     // Словарь с ключами от 0... 
@@ -308,7 +308,7 @@ int main(){
         "slug_url: "<< bookDescr.slug_url << std::endl;
 
     std::string tags = "";
-    for (auto & tag : bookDescr.tags){
+    for (std::string tag : bookDescr.tags){
         tags += tag + "; ";
     }
 
