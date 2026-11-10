@@ -2,7 +2,11 @@
 
 url: `https://ranobelib.me/ru/book/203736--seoul-object-story?section=chapters`
 
-# GET `/api/manga/` - получение полной информации о тайтле
+API: "https://api.imglib.info/api/manga/"
+
+## получение полной информации о тайтле
+- Метод: GET
+- Endpointer: `/api/manga/{SLUG_URL}`
 
 Пример с сайта
 ```html
@@ -96,10 +100,11 @@ fields[30]:	format
 
 
 
-# GET - Получение списка глав и branch_id
-https://api.imglib.info/api/manga/{Title_text_id}/chapters
+## Получение списка глав и branch_id
+- Метод: `GET`
+- API: {Title_text_id}/chapters
 
-## JSON
+### JSON
 
 - data
     - 0, ....
