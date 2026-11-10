@@ -11,8 +11,6 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
-
-
 struct ChapterData {
     int volume;
     int chapter;
@@ -101,7 +99,7 @@ std::vector<std::string> extract_strings_from_json_object(const json& j, const s
 }
 
 /// @brief распарсинг json. Запись в структуру информации о книге
-void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, json json_title_info = json{}){
+void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, const json json_title_info = json{}){
 
 //    json json_chapter_content = get_chapter_content(&session, chapterData.id_url_title, chapterData.volume, chapterData.chapter, chapterData.branch_id);
     if(json_title_info.empty()){
@@ -298,9 +296,24 @@ int main(){
     };
 
     parserInit(&session, cookies);
-    // =====
 
+    // ===== тестирование дескриптора
+#if 1
     std::vector<json> test_data = get_data(&bookDescr);
+
+    prc_bookInfo_from_json(session, bookDescr, test_data[1]);
+
+    std::cout << 
+        "title: " << bookDescr.title << "\n"
+        "slug_url: "<< bookDescr.slug_url << std::endl;
+
+    std::string tags = "";
+    for (auto & tag : bookDescr.tags){
+        tags += tag + "; ";
+    }
+
+    std::cout << tags << std::endl;
+#endif
 
     // =====
     return 0;
