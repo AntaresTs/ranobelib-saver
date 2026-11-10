@@ -12,7 +12,7 @@
 
 
 
-# Парсинг
+# API
 ## Список глав 
 - Метод **GET**
 - Путь: `https://api.imglib.info/api/manga/203736--seoul-object-story/chapters?volume={VOLUME}&number={CHAPTER_NUM}`
