@@ -119,6 +119,7 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
 
     // Названеи произведения на русском
     bookDescriptor->title = j.contains("rus_name") && j["rus_name"].is_object() ? j.at("rus_name").get<std::string>() : std::string{};
+    std::cout << "Name russian: " << bookDescriptor->title << std::endl;
 
     // Альтернативные названия
     bookDescriptor->alternative_titles = j.contains("otherNames") && j["otherNames"].is_object() ? j.at("otherNames").get<std::vector<std::string>>() : std::vector<std::string>{};
@@ -152,7 +153,7 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     // type - "text"
     // text - содержание параграфа
     // TODO: !
-    json summary = j.at("content");
+    json summary = j.at("summary").at("content");
     
     // тут несколько типов обложек
     //json cover = j.at("cover");
@@ -166,7 +167,7 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     std::vector<std::string> translate_teems = extract_strings_from_json_object(j, "teams", "name");
 
     // Франшиза. Или же пародия
-    std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].at("name").get<std::string>() : std::string{}};
+    //std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].at("name").get<std::string>() : std::string{}};
 
 }
 
@@ -301,12 +302,17 @@ int main(){
 #if 1
     std::vector<json> test_data = get_data(&session, &bookDescr);
 
-    prc_bookInfo_from_json(&session, &bookDescr, test_data[1]);
+    prc_bookInfo_from_json(&session, &bookDescr, test_data[0]);
 
     std::cout << 
+        "languages: " << bookDescr.languages[0] << "\n"
         "title: " << bookDescr.title << "\n"
-        "slug_url: "<< bookDescr.slug_url << std::endl;
+        "original title: " << bookDescr.original_title << "\n"
+        "slug_url: "<< bookDescr.slug_url << "\n"
+        "Country of origin of the book: " << bookDescr.country_of_origin_of_the_book << "\n"
+        << std::endl;
 
+    std::cout << "Tags:" << std::endl;
     std::string tags = "";
     for (std::string tag : bookDescr.tags){
         tags += tag + "; ";
