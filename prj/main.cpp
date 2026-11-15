@@ -89,7 +89,7 @@ json get_title_info(cpr::Session* session, const std::string& slug_url) {
 /// @brief Функция для удобства
 std::vector<std::string> extract_strings_from_json_object(const json& j, const std::string& field, const std::string& subfield){
     std::vector<std::string> out_data;
-    if (j.contains(field) && j[field].is_object()){
+    if (j.contains(field)){ // && j[field].is_object()
         for (const auto& [_, value] : j.at(field).items()){
             out_data.push_back(value.value(subfield, std::string{}));
         }
@@ -121,8 +121,8 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     bookDescriptor->title = j.contains("rus_name") ? j.at("rus_name").get<std::string>() : std::string{};
 
     // Альтернативные названия
-    bookDescriptor->alternative_titles = j.contains("otherNames") && j["otherNames"].is_object() ? j.at("otherNames").get<std::vector<std::string>>() : std::vector<std::string>{};
-    std::cout << "Alt name: " << bookDescriptor->alternative_titles << std::endl;
+    bookDescriptor->alternative_titles = j.contains("otherNames") ? j.at("otherNames").get<std::vector<std::string>>() : std::vector<std::string>{};
+    std::cout << "Alt name: " << bookDescriptor->alternative_titles[0] << std::endl;
 
     // Страна происхождения
     bookDescriptor->country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
