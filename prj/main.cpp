@@ -139,7 +139,13 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     bookDescriptor->tags = extract_strings_from_json_object(j, "tags", "name");
     
     // Издатели
-    //bookDescriptor->publisher = {j.contains("publisher") ? j["publisher"].at("name").get<std::string>() : std::string{}};
+    std::vector<json> json_publishers = j.contains("publisher") ? j["publisher"].get<std::vector<json>>() : std::vector<json>{};
+    
+    for (json publisher : json_publishers){
+       bookDescriptor->publishers.push_back(publisher["name"]);
+    }
+
+    //bookDescriptor->publisher = j.contains("publisher") ? j["publisher"].at("name").get<std::string>() : std::string{};
 
     // Список авторов. тоже стандартный словарь. Нужно парсить поле .{num}.name
     bookDescriptor->authors = extract_strings_from_json_object(j, "authors", "name");
