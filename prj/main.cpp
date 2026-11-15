@@ -125,10 +125,10 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     std::cout << "Alt name: " << bookDescriptor->alternative_titles[0] << std::endl;
 
     // Страна происхождения
-    bookDescriptor->country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
+    bookDescriptor->country_of_origin_of_the_book = j.contains("type")? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
 
     // Дата публикации
-    bookDescriptor->year_of_publication = j.contains("releaseDate") && j["releaseDate"].is_object() ? j.at("releaseDate").get<std::string>() : std::string{};
+    bookDescriptor->year_of_publication = j.contains("releaseDate") ? j.at("releaseDate").get<std::string>() : std::string{};
 
     // жанры
     // Словарь с ключами от 0... 
@@ -139,7 +139,7 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     bookDescriptor->tags = extract_strings_from_json_object(j, "tags", "name");
     
     // Издатели
-    bookDescriptor->publisher = {j.contains("publisher") && j["publisher"].is_object() ? j["publisher"].at("name").get<std::string>() : std::string{}};
+    //bookDescriptor->publisher = {j.contains("publisher") ? j["publisher"].at("name").get<std::string>() : std::string{}};
 
     // Список авторов. тоже стандартный словарь. Нужно парсить поле .{num}.name
     bookDescriptor->authors = extract_strings_from_json_object(j, "authors", "name");
@@ -152,9 +152,11 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     // Содержит словарь, с ключами от 0 и т.д., номера параграфов. Словарь содержит
     // type - "text"
     // text - содержание параграфа
-    // TODO: !
-    json summary = j.at("summary").at("content");
+    std::vector<json> summary = j.contains("summary") && j["summary"].contains("content") ? j["summary"]["content"].get<std::vector<json>>() : std::vector<json>{};
     
+    // func(summary) ->> text
+    
+
     // тут несколько типов обложек
     //json cover = j.at("cover");
 
@@ -319,6 +321,14 @@ int main(){
     }
 
     std::cout << tags << std::endl;
+
+    std::cout << "Genes:" << std::endl;
+    std::string genres = "";
+    for (std::string genre : bookDescr.genres){
+        genres += genre + "; ";
+    }
+    std::cout << genres << std::endl;
+
 #endif
 
     // =====
