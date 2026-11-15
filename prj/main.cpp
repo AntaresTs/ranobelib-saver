@@ -118,11 +118,11 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     bookDescriptor->original_title = j.at("name").get<std::string>();
 
     // Названеи произведения на русском
-    bookDescriptor->title = j.contains("rus_name") && j["rus_name"].is_object() ? j.at("rus_name").get<std::string>() : std::string{};
-    std::cout << "Name russian: " << bookDescriptor->title << std::endl;
+    bookDescriptor->title = j.contains("rus_name") ? j.at("rus_name").get<std::string>() : std::string{};
 
     // Альтернативные названия
     bookDescriptor->alternative_titles = j.contains("otherNames") && j["otherNames"].is_object() ? j.at("otherNames").get<std::vector<std::string>>() : std::vector<std::string>{};
+    std::cout << "Alt name: " << bookDescriptor->alternative_titles << std::endl;
 
     // Страна происхождения
     bookDescriptor->country_of_origin_of_the_book = j.contains("type") && j["type"].is_object() ? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
