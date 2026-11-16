@@ -263,17 +263,17 @@ std::vector<json> get_data(cpr::Session* session, ModBookInfo* bookDescr){
     std::string cash_titl_info_fname = "title_info_cach_fname.json";
     std::string cash_chapter_info_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
    
-    json chapter_raw_json = cash_prc(cash_titl_info_fname);
-    json title_raw_json = cash_prc(cash_chapter_info_fname);
+    json chapter_raw_json = cash_prc(cash_chapter_info_fname);
+    json title_raw_json = cash_prc(cash_titl_info_fname);
 
     if(chapter_raw_json.empty()){
         json rq2 = get_chapter_content(session, bookDescr->slug_url, test_cd.volume, test_cd.chapter);
-        cash_prc(cash_chapter_info_fname, rq2);
+        chapter_raw_json = cash_prc(cash_chapter_info_fname, rq2);
     }
 
     if(title_raw_json.empty()){
         json rq1 = get_title_info(session, bookDescr->slug_url);
-        cash_prc(cash_titl_info_fname, rq1);
+        title_raw_json = cash_prc(cash_titl_info_fname, rq1);
     }
     
     std::vector<json> outd = {chapter_raw_json, title_raw_json};
@@ -310,7 +310,7 @@ int main(){
 #if 1
     std::vector<json> test_data = get_data(&session, &bookDescr);
 
-    prc_bookInfo_from_json(&session, &bookDescr, test_data[0]);
+    prc_bookInfo_from_json(&session, &bookDescr, test_data[1]);
 
     std::cout << 
         "languages: " << bookDescr.languages[0] << "\n"
