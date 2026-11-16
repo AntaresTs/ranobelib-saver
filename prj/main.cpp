@@ -11,6 +11,25 @@
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
+// ====================================
+
+
+/**
+ * @brief (AI) Один элемент разобранного документа.
+ *
+ * Хранит "плоское" представление узла: тип (например, "paragraph" или
+ * "horizontalRule") и уже склеенный текст. Для картинок в будущем сюда
+ * можно добавить поле `url`/`path` и т.п.
+ */
+struct DocBlock {
+    std::string type;       ///< Тип блока: "paragraph", "horizontalRule", ...
+    std::string text;       ///< Склеенный текст (для paragraph); для hr — "---".
+    std::string image_url;
+};
+
+/**
+ * @brief хранит данные о конкретной главе
+ */
 struct ChapterData {
     int volume;
     int chapter;
@@ -19,6 +38,9 @@ struct ChapterData {
     std::vector<DocBlock> raw_content;          ///< Suda budet pomeshtsa soderjimoye chapter in raw format
 };
 
+/**
+ * @brief Модификация book description из библиотеки
+ */
 struct ModBookInfo : LibBook {
     std::string slug_url;
     std::vector<ChapterData> chapters;
@@ -88,18 +110,6 @@ json get_title_info(cpr::Session* session, const std::string& slug_url) {
 }
 
 
-/**
- * @brief (AI) Один элемент разобранного документа.
- *
- * Хранит "плоское" представление узла: тип (например, "paragraph" или
- * "horizontalRule") и уже склеенный текст. Для картинок в будущем сюда
- * можно добавить поле `url`/`path` и т.п.
- */
-struct DocBlock {
-    std::string type;       ///< Тип блока: "paragraph", "horizontalRule", ...
-    std::string text;       ///< Склеенный текст (для paragraph); для hr — "---".
-    std::string image_url;
-};
 
 /**
  * @brief (AI) Рекурсивно извлекает текст из узла документного дерева.
@@ -176,7 +186,7 @@ std::vector<DocBlock> parse_doc_blocks(const std::vector<json>& content) {
             b.text = extract_text(node);
             blocks.push_back(std::move(b));
         } else if (type == "horizontalRule") {
-            b.text = "---"
+            b.text = "---";
             blocks.push_back(std::move(b));
         } else {
             // TODO: image и прочие типы — добавить при необходимости.
@@ -196,7 +206,7 @@ std::vector<DocBlock> parse_doc_blocks(const std::vector<json>& content) {
 static DocBlock parse_one_block(const json& node) {
     // Пропускаем некорректные узлы: не объект или без поля "type".
     if (!node.is_object() || !node.contains("type") || !node["type"].is_string()) {
-        continue;
+        throw std::invalid_argument("parse_one_block: node without string 'type'");
     }
     const std::string type = node["type"].get<std::string>();
 
@@ -206,7 +216,7 @@ static DocBlock parse_one_block(const json& node) {
     if (type == "paragraph") {
         b.text = extract_text(node);
     } else if (type == "horizontalRule") {
-        b.text = "---"
+        b.text = "---";
     } else {
         // TODO: image и прочие типы — добавить при необходимости.
         throw std::invalid_argument("parse_one_block: неподдерживаемый тип: " + type);
@@ -219,7 +229,7 @@ static DocBlock parse_one_block(const json& node) {
  * @brief функция для конвертации из json в нужную структуру
  */
 void from_json(const json& j, DocBlock& b){
-    b = parse_one_block(j)
+    b = parse_one_block(j);
 }
 
 /**
