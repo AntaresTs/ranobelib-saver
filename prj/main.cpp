@@ -128,6 +128,7 @@ static std::string extract_text(const json& node) {
     return out;
 }
 
+// TODO: Make tak chtoby rabotalo j["summary"]["content"].get<std::vector<DocBlock>>();
 /**
  * @brief (AI) Разбирает массив узлов `content` в вектор блоков {@link DocBlock}.
  *
@@ -168,14 +169,13 @@ std::vector<DocBlock> parse_doc_blocks(const std::vector<json>& content) {
         }
         const std::string type = node["type"].get<std::string>();
 
+        DocBlock b;
+        b.type = type;
+
         if (type == "paragraph") {
-            DocBlock b;
-            b.type = "paragraph";
             b.text = extract_text(node);
             blocks.push_back(std::move(b));
         } else if (type == "horizontalRule") {
-            DocBlock b;
-            b.type = "horizontalRule";
             b.text = "---"
             blocks.push_back(std::move(b));
         } else {
@@ -186,6 +186,48 @@ std::vector<DocBlock> parse_doc_blocks(const std::vector<json>& content) {
     return blocks;
 }
 
+/**
+ * @brief (AI*) Разбирает один узел `content` в DocBlock.
+ *
+ * Бросает исключение, если тип не поддерживается — чтобы `get<vector<DocBlock>>()`
+ * не молча терял данные. Если хотите «пропускать» неподдерживаемые узлы,
+ * используйте вариант `parse_doc_blocks` ниже.
+ */
+static DocBlock parse_one_block(const json& node) {
+    // Пропускаем некорректные узлы: не объект или без поля "type".
+    if (!node.is_object() || !node.contains("type") || !node["type"].is_string()) {
+        continue;
+    }
+    const std::string type = node["type"].get<std::string>();
+
+    DocBlock b;
+    b.type = type;
+
+    if (type == "paragraph") {
+        b.text = extract_text(node);
+    } else if (type == "horizontalRule") {
+        b.text = "---"
+    } else {
+        // TODO: image и прочие типы — добавить при необходимости.
+        throw std::invalid_argument("parse_one_block: неподдерживаемый тип: " + type);
+    }
+
+    return b;
+}
+
+/**
+ * @brief функция для конвертации из json в нужную структуру
+ */
+void from_json(const json& j, DocBlock& b){
+    b = parse_one_block(j)
+}
+
+/**
+ * @brief функция для конвертации из структуры в json
+ */
+void to_json(json& j, const DocBlock& b) {
+    j = json{{"type", b.type}, {"text", b.text}};
+}
 
 /// @brief Функция для удобства
 /// извекает из json строки и помещает их в вектор
