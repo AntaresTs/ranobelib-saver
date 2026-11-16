@@ -312,7 +312,7 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     // Содержит словарь, с ключами от 0 и т.д., номера параграфов. Словарь содержит
     // type - "text"
     // text - содержание параграфа
-    std::vector<json> summary = j.contains("summary") && j["summary"].contains("content") ? j["summary"]["content"].get<std::vector<json>>() : std::vector<json>{};
+    std::vector<DocBlock> summary = j.contains("summary") && j["summary"].contains("content") ? j["summary"]["content"].get<std::vector<DocBlock>>() : std::vector<DocBlock>{};
     
     // func(summary) ->> text
     
