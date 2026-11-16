@@ -16,6 +16,7 @@ struct ChapterData {
     int chapter;
     int branch_id;
     std::string translate_teem;
+    std::vector<DocBlock> raw_content;          ///< Suda budet pomeshtsa soderjimoye chapter in raw format
 };
 
 struct ModBookInfo : LibBook {
@@ -86,7 +87,108 @@ json get_title_info(cpr::Session* session, const std::string& slug_url) {
     return get_json_from_url(session, url);
 }
 
+
+/**
+ * @brief (AI) Один элемент разобранного документа.
+ *
+ * Хранит "плоское" представление узла: тип (например, "paragraph" или
+ * "horizontalRule") и уже склеенный текст. Для картинок в будущем сюда
+ * можно добавить поле `url`/`path` и т.п.
+ */
+struct DocBlock {
+    std::string type;       ///< Тип блока: "paragraph", "horizontalRule", ...
+    std::string text;       ///< Склеенный текст (для paragraph); для hr — "---".
+    std::string image_url;
+};
+
+/**
+ * @brief (AI) Рекурсивно извлекает текст из узла документного дерева.
+ *
+ * Проходит по массиву `content` текущего узла и склеивает все значения поля
+ * `text` вложенных узлов (например, `paragraph` -> `text`). Если узел не
+ * имеет `content` или `text`, рекурсия просто не даёт вклада.
+ *
+ * @param node JSON-узел, из которого нужно извлечь текст.
+ * @return Склеенная строка текста (может быть пустой для не-текстовых узлов).
+ */
+static std::string extract_text(const json& node) {
+    std::string out;
+
+    // Если у узла есть собственный текст — добавляем его.
+    if (node.contains("text") && node["text"].is_string()) {
+        out += node["text"].get<std::string>();
+    }
+
+    // Рекурсивно обходим вложенные узлы (например, paragraph -> text).
+    if (node.contains("content") && node["content"].is_array()) {
+        for (const auto& child : node["content"]) {
+            out += extract_text(child);
+        }
+    }
+    return out;
+}
+
+/**
+ * @brief (AI) Разбирает массив узлов `content` в вектор блоков {@link DocBlock}.
+ *
+ * Ожидает на входе уже извлечённый массив `content` документа, например:
+ * @code{.cpp}
+ * std::vector<json> summary =
+ *     j.contains("summary") && j["summary"].contains("content")
+ *         ? j["summary"]["content"].get<std::vector<json>>()
+ *         : std::vector<json>{};
+ * @endcode
+ *
+ * Поддерживаются типы:
+ *  - `paragraph` — текст склеивается через {@link extract_text}, результат
+ *    кладётся в {@link DocBlock::text}; блок добавляется в результат, даже
+ *    если текст получился пустым (это может быть намеренный пустой абзац).
+ *  - `horizontalRule` — соответствует `---` в Markdown / `<hr>` в HTML;
+ *    создаётся блок с пустым текстом.
+ *
+ * Прочие типы (например, `image`) сейчас пропускаются. Чтобы их поддержать,
+ * достаточно добавить ветку `if/else if` и, при необходимости, расширить
+ * {@link DocBlock} дополнительными полями (например, `url`).
+ *
+ * Порядок блоков в результате совпадает с порядком элементов во входном
+ * массиве, что важно для правильного позиционирования картинок и
+ * разделителей относительно текста.
+ *
+ * @param content Массив узлов `content` из документа (может быть пустым).
+ * @return Вектор разобранных блоков в порядке следования в документе.
+ */
+std::vector<DocBlock> parse_doc_blocks(const std::vector<json>& content) {
+    std::vector<DocBlock> blocks;
+    blocks.reserve(content.size());
+
+    for (const auto& node : content) {
+        // Пропускаем некорректные узлы: не объект или без поля "type".
+        if (!node.is_object() || !node.contains("type") || !node["type"].is_string()) {
+            continue;
+        }
+        const std::string type = node["type"].get<std::string>();
+
+        if (type == "paragraph") {
+            DocBlock b;
+            b.type = "paragraph";
+            b.text = extract_text(node);
+            blocks.push_back(std::move(b));
+        } else if (type == "horizontalRule") {
+            DocBlock b;
+            b.type = "horizontalRule";
+            b.text = "---"
+            blocks.push_back(std::move(b));
+        } else {
+            // TODO: image и прочие типы — добавить при необходимости.
+        }
+    }
+
+    return blocks;
+}
+
+
 /// @brief Функция для удобства
+/// извекает из json строки и помещает их в вектор
 std::vector<std::string> extract_strings_from_json_object(const json& j, const std::string& field, const std::string& subfield){
     std::vector<std::string> out_data;
     if (j.contains(field)){ // && j[field].is_object()
