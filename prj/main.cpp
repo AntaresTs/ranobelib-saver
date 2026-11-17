@@ -314,6 +314,10 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     // text - содержание параграфа
     std::vector<DocBlock> summary = j.contains("summary") && j["summary"].contains("content") ? j["summary"]["content"].get<std::vector<DocBlock>>() : std::vector<DocBlock>{};
     
+    for(const auto& b : summary){
+        std::cout << b.text << "\n" << std::endl;
+    }
+
     // func(summary) ->> text
     
 
@@ -524,3 +528,28 @@ void parserInit(cpr::Session* session, const cpr::Cookies& cookies) {
     session->SetHeader(headers);
     session->SetCookies(cookies);
 }
+
+/**
+ [summary][content][0...][type | content]
+         "summary": {
+            "content": [
+                {
+                    "content": [
+                        {
+                            "text": "Человечество",
+                            "type": "text"
+                        }
+                    ],
+                    "type": "paragraph"
+                },
+                {
+                    "content": [
+                        {
+                            "text": "Эта история о реинкарнации в Объект и жизнь без забот в Сеуле такого мира.",
+                            "type": "text"
+                        }
+                    ],
+                    "type": "paragraph"
+                }
+            ]
+*/ 
