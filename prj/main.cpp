@@ -25,6 +25,7 @@ struct DocBlock {
     std::string type;       ///< Тип блока: "paragraph", "horizontalRule", ...
     std::string text;       ///< Склеенный текст (для paragraph); для hr — "---".
     std::string image_url;
+
 };
 
 /**
@@ -228,28 +229,31 @@ static DocBlock parse_one_block(const json& node) {
 /**
  * @brief функция для конвертации из json в нужную структуру
  */
-void from_json(const json& j, DocBlock& b){
-    b = parse_one_block(j);
-}
+void from_json(const json& j, DocBlock& b);
 
 /**
  * @brief функция для конвертации из структуры в json
  */
-void to_json(json& j, const DocBlock& b) {
-    j = json{{"type", b.type}, {"text", b.text}};
-}
+void to_json(json& j, const DocBlock& b);
 
-/// @brief Функция для удобства
-/// извекает из json строки и помещает их в вектор
-std::vector<std::string> extract_strings_from_json_object(const json& j, const std::string& field, const std::string& subfield){
-    std::vector<std::string> out_data;
-    if (j.contains(field)){ // && j[field].is_object()
-        for (const auto& [_, value] : j.at(field).items()){
-            out_data.push_back(value.value(subfield, std::string{}));
-        }
+/**
+ * @brief Функция для удобства
+* извекает из json строки и помещает их в вектор
+*/ 
+std::vector<std::string> extract_strings_from_json_object(const json& j, const std::string& field, const std::string& subfield);
+
+/**
+ * @brief Function for converting a vector<DocBlock> into a string.
+ * May not be suitable for the content of the chapter
+ */
+std::string convert_vector_docBlock_to_text(const std::vector<DocBlock>& raw_content){
+    std::string content = "";
+    
+    for(const auto& b : raw_content){
+        content += b.text + "\n\n";
     }
 
-    return out_data;
+    return content;
 }
 
 /// @brief распарсинг json. Запись в структуру информации о книге
@@ -313,13 +317,8 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     // type - "text"
     // text - содержание параграфа
     std::vector<DocBlock> summary = j.contains("summary") && j["summary"].contains("content") ? j["summary"]["content"].get<std::vector<DocBlock>>() : std::vector<DocBlock>{};
-    
-    for(const auto& b : summary){
-        std::cout << b.text << "\n" << std::endl;
-    }
+    bookDescriptor->description = convert_vector_docBlock_to_text(summary);
 
-    // func(summary) ->> text
-    
 
     // тут несколько типов обложек
     //json cover = j.at("cover");
@@ -476,6 +475,7 @@ int main(){
         "original title: " << bookDescr.original_title << "\n"
         "slug_url: "<< bookDescr.slug_url << "\n"
         "Country of origin of the book: " << bookDescr.country_of_origin_of_the_book << "\n"
+        "Description: " << bookDescr.description << "\n"
         << std::endl;
 
     std::cout << "Tags:" << std::endl;
@@ -527,6 +527,28 @@ void parserInit(cpr::Session* session, const cpr::Cookies& cookies) {
 
     session->SetHeader(headers);
     session->SetCookies(cookies);
+}
+
+std::vector<std::string> extract_strings_from_json_object(const json& j, const std::string& field, const std::string& subfield){
+    std::vector<std::string> out_data;
+    if (j.contains(field)){ // && j[field].is_object()
+        for (const auto& [_, value] : j.at(field).items()){
+            out_data.push_back(value.value(subfield, std::string{}));
+        }
+    }
+
+    return out_data;
+}
+
+
+// =================== JSON
+
+void to_json(json& j, const DocBlock& b) {
+    j = json{{"type", b.type}, {"text", b.text}};
+}
+
+void from_json(const json& j, DocBlock& b){
+    b = parse_one_block(j);
 }
 
 /**
