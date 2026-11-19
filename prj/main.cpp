@@ -25,7 +25,6 @@ struct DocBlock {
     std::string type;       ///< Тип блока: "paragraph", "horizontalRule", ...
     std::string text;       ///< Склеенный текст (для paragraph); для hr — "---".
     std::string image_url;
-
 };
 
 /**
@@ -35,7 +34,7 @@ struct ChapterData {
     int volume;
     int chapter;
     int branch_id;
-    std::string translate_teem;
+    std::vector<std::string> translate_teems;
     std::vector<DocBlock> raw_content;          ///< Suda budet pomeshtsa soderjimoye chapter in raw format
 };
 
@@ -49,6 +48,7 @@ struct ModBookInfo : LibBook {
 
 // Инициилизация парсера
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
+
 
 #if 0
  /// @breif Функция для сохранения Cooki
@@ -69,9 +69,7 @@ void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
      std::cout << "Save Cookie in file: " << filename << std::endl;
  }
 
-void loadCookies() {
-    return;
-}
+void loadCookies() { }
 #endif
 
 
@@ -263,15 +261,13 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     if(json_title_info.empty()){
         json_title_info = get_title_info(session, bookDescriptor->slug_url);
     }
-
     json j = json_title_info.at("data");
-
 
     // Пока сойдет и так
     bookDescriptor->languages.push_back("ru");
 
     /// ==== Что имеет поле в book descriptor ==== 
-    ///
+
     // Оригинальное названеи произведения
     bookDescriptor->original_title = j.at("name").get<std::string>();
 
@@ -311,25 +307,24 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
     // Список художников. тоже стандартный словарь. .{num}.name
     bookDescriptor->artists = extract_strings_from_json_object(j, "artists", "name");
 
-    /// ==== Что не имеет поле в book descriptor ===
-    
     // Содержит словарь, с ключами от 0 и т.д., номера параграфов. Словарь содержит
-    // type - "text"
-    // text - содержание параграфа
     std::vector<DocBlock> summary = j.contains("summary") && j["summary"].contains("content") ? j["summary"]["content"].get<std::vector<DocBlock>>() : std::vector<DocBlock>{};
     bookDescriptor->description = convert_vector_docBlock_to_text(summary);
 
-
+    /// ==== Что не имеет поле в book descriptor ===
+    
     // тут несколько типов обложек
     //json cover = j.at("cover");
 
     // Возрастное ограничение, в формате текста
-    std::string ageRestriction = j.contains("ageRestriction") ? j["ageRestriction"].at("label").get<std::string>() : std::string{}; //j.at("ageRestriction").value("label", std::string{});
+    //std::string ageRestriction = j.contains("ageRestriction") ? j["ageRestriction"].at("label").get<std::string>() : std::string{};
 
-    // Команды превода
-    // Содержит словарь, с ключами от 0 и т.д.. 
-    // имеет поле name с ником автора
-    std::vector<std::string> translate_teems = extract_strings_from_json_object(j, "teams", "name");
+    /* Команды превода
+     * Содержит словарь, с ключами от 0 и т.д.. 
+     * имеет поле name с ником переводчика.
+     * По сути бесполезен, т.к. кто перевевел, это свойство главы
+     */
+    //std::vector<std::string> translate_teems = extract_strings_from_json_object(j, "teams", "name");
 
     // Франшиза. Или же пародия
     //std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].at("name").get<std::string>() : std::string{}};
@@ -337,8 +332,19 @@ void prc_bookInfo_from_json(cpr::Session* session, ModBookInfo* bookDescriptor, 
 }
 
 
+/* @breif Functions for fulling chapter structure
+ * Tut proishodit razbor json dannyh dla 1 chapter. 
+ */
+ChapterData prc_one_chapters_from_json(json json_chapter_info){
+    ChapterData chapDat;
+
+
+
+    return chapDat
+}
+
 /// std::this_thread::sleep_for(std::chrono::seconds(2)); //Сделать задержку на 2 секунды
-// ==========
+
 
 std::string get_slug_url_from_url(std::string url);
 
@@ -358,6 +364,7 @@ void get_req(cpr::Session* session, const std::string& url){
 
 }
 
+/// @brief Функция для загрузки/ыгрузки кэша
 json cash_prc(const std::string& fname, const json& load_data = json{}) {
     /// @brief Работа с кешем. Функция для отлаживания работы с json, чтобы не отправлять запросы к сайту
 
@@ -466,16 +473,16 @@ int main(){
     // ===== тестирование дескриптора
 #if 1
     std::vector<json> test_data = get_data(&session, &bookDescr);
-
     prc_bookInfo_from_json(&session, &bookDescr, test_data[1]);
 
-    std::cout << 
+    std::cout <<
+        "==========================\n"
         "languages: " << bookDescr.languages[0] << "\n"
         "title: " << bookDescr.title << "\n"
         "original title: " << bookDescr.original_title << "\n"
         "slug_url: "<< bookDescr.slug_url << "\n"
         "Country of origin of the book: " << bookDescr.country_of_origin_of_the_book << "\n"
-        "Description: " << bookDescr.description << "\n"
+        "Description: \n--------------" << bookDescr.description << "\n--------------\n"
         << std::endl;
 
     std::cout << "Tags:" << std::endl;
@@ -483,7 +490,6 @@ int main(){
     for (std::string tag : bookDescr.tags){
         tags += tag + "; ";
     }
-
     std::cout << tags << std::endl;
 
     std::cout << "Genes:" << std::endl;
@@ -499,6 +505,7 @@ int main(){
     return 0;
 }
 
+/// @breif Get slug url fron url string
 std::string get_slug_url_from_url(std::string url){
     std::string find_substr = "ranobelib.me/ru/book/";
     size_t pos = url.find(find_substr);
@@ -512,6 +519,7 @@ std::string get_slug_url_from_url(std::string url){
     }
 }
 
+/// @breif Parser init
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies) {
 
     cpr::Header headers = {
