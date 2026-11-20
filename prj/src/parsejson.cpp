@@ -303,7 +303,7 @@ ChapterData prc_one_chapters_from_json(json json_chapter_info){
     };
     */
 
-    chapterDat.branch_id = j.at("branch_id").get<std::string>();
+    chapterDat.branch_id = std::to_string(j.at("branch_id").get<int>());
     chapterDat.created_at = j.at("created_at").get<std::string>();
     chapterDat.name = j.at("name").get<std::string>();
     chapterDat.raw_content = j.at("content").get<std::vector<DocBlock>>();
