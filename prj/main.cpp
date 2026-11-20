@@ -141,7 +141,7 @@ json cash_prc(const std::string& fname, const json& load_data = json{}) {
 /// @brief пример парсинга данных и записи их в кэш.
 /// TODO: Реализовать динамическую задержку!
 void exemple_1(cpr::Session* session, const std::string& slug_url){
-    ChapterData test_cd (1, 60, 0, ""); 
+    ChapterData test_cd (1, 60, 0); 
     json rq1 = get_title_info(session, slug_url);
     json rq2 = get_chapter_content(session, slug_url, 1, 60);
 
@@ -164,7 +164,7 @@ void exemple_1(cpr::Session* session, const std::string& slug_url){
 
 /// @breif Получение сырых данных
 std::vector<json> get_data(cpr::Session* session, ModBookInfo* bookDescr){
-    ChapterData test_cd (1, 60, 0, ""); 
+    ChapterData test_cd (1, 60, 0); 
     std::string cash_titl_info_fname = "title_info_cach_fname.json";
     std::string cash_chapter_info_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
    
