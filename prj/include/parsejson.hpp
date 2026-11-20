@@ -28,9 +28,11 @@ struct DocBlock {
  * @brief хранит данные о конкретной главе
  */
 struct ChapterData {
+    std::string name;
     int volume;
     int chapter;
-    int branch_id;
+    std::string branch_id;
+    std::string created_at;
     std::vector<std::string> translate_teems;
     std::vector<DocBlock> raw_content;          ///< Suda budet pomeshtsa soderjimoye chapter in raw format
 };
