@@ -65,18 +65,11 @@ int parserInit(cpr::Session& session, const std::string& mangalib_session = "", 
 void loadCookies() { }
 #endif
 
-
-
-
-
-
-
 /// std::this_thread::sleep_for(std::chrono::seconds(2)); //Сделать задержку на 2 секунды
-
 
 std::string get_slug_url_from_url(std::string url);
 
-
+/// @brief Test function dla proverki otpravki zaprosov
 void get_req(cpr::Session* session, const std::string& url){
     session->SetUrl(url);
     cpr::Response resp = session->Get();
@@ -207,7 +200,7 @@ int main(){
         "original title: " << bookDescr.original_title << "\n"
         "slug_url: "<< bookDescr.slug_url << "\n"
         "Country of origin of the book: " << bookDescr.country_of_origin_of_the_book << "\n"
-        "Description: \n--------------" << bookDescr.description << "\n--------------\n"
+        "Description: \n--------------\n" << bookDescr.description << "\n--------------\n"
         << std::endl;
 
     std::cout << "Tags:" << std::endl;
