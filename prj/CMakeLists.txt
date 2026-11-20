@@ -8,6 +8,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(storage_structures INTERFACE)
 target_include_directories(storage_structures INTERFACE include)
 
+add_compile_options(
+    -Wall
+    -Wextra
+    -Wpedantic
+    -g
+    -O0
+)
+
 find_package(cpr REQUIRED)
 find_package(CURL REQUIRED)
 find_package(nlohmann_json REQUIRED)

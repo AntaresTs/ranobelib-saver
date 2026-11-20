@@ -7,30 +7,6 @@ using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 
-/// @breif Parser init
-int parserInit(cpr::Session& session, const std::string& mangalib_session = "", const std::string& xsrf_token = "") {
-
-    cpr::Cookies cookies = {
-        {"mangalib_session", mangalib_session.empty() ? "" : mangalib_session},
-        {"XSRF-TOKEN", xsrf_token.empty() ? "" : xsrf_token}
-    };
-
-    cpr::Header headers = {
-        {"Host", "api.imglib.info"},
-        {"User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:154.0) Gecko/20100101 Firefox/154.0"},
-        {"Accept-Language", "en-US,en;q=0.9"},
-        {"Accept-Encoding", "gzip, deflate, br, zstd"},
-        {"Referer", "https://ranobelib.me/"},
-        {"Origin", "https://ranobelib.me"},
-        {"Content-Type", "application/json"},
-        {"Site-Id", "3"}
-    };
-
-    session.SetHeader(headers);
-    session.SetCookies(cookies);
-
-    return 1;
-}
 
 /// @brief отправка запроса и получение json
 json get_json_from_url(cpr::Session* session, const std::string& url){

@@ -6,7 +6,7 @@
 # endif
 
 /// @breif Parser init
-cpr::Session parserInit(cpr::Session& session, const std::string& mangalib_session = "", const std::string& xsrf_token = "");
+//cpr::Session parserInit(cpr::Session* session, const std::string& mangalib_session = "", const std::string& xsrf_token = "");
 
 /*
  * @brief Получить контент главы в виде json
