@@ -13,7 +13,7 @@ add_compile_options(
     -Wextra
     -Wpedantic
     -g
-    -O0
+    -O2
 )
 
 find_package(cpr REQUIRED)
