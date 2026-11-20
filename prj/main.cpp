@@ -175,7 +175,7 @@ void test(std::string url){
     ChapterData chapterData = prc_one_chapters_from_json(test_data[0]);
 
     std::cout <<
-        "============ TEST BookDescriptor ==============\n"
+        "\n============ TEST BookDescriptor ==============\n"
         "languages: " << bookDescr.languages[0] << "\n"
         "title: " << bookDescr.title << "\n"
         "original title: " << bookDescr.original_title << "\n"
@@ -200,18 +200,8 @@ void test(std::string url){
 
     // --------
     
-    struct ChapterData {
-        std::string name;
-        int volume;
-        int chapter;
-        int branch_id;
-        std::string created_at;
-        std::vector<std::string> translate_teems;
-        std::vector<DocBlock> raw_content;          ///< Suda budet pomeshtsa soderjimoye chapter in raw format
-    };
-
     std::cout <<
-        "========== TEST Chapter Data ===========\n"
+        "\n========== TEST Chapter Data ===========\n"
         "Chapter name: " << chapterData.name << "\n"
         "Volume num: " << chapterData.volume << "\n"
         "Chapter num: " << chapterData.chapter << "\n"
