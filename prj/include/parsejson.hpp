@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 #include <nlohmann/json.hpp>
 #include "lib/StorageStructures.hpp"     // Структура для descriptor

@@ -14,6 +14,7 @@ find_package(nlohmann_json REQUIRED)
 
 add_executable(app.run main.cpp
     src/parsejson.cpp
+    src/webparser.cpp
 )
 target_link_libraries(app.run PRIVATE
     storage_structures
