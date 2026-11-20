@@ -227,7 +227,6 @@ void prc_bookInfo_from_json(const json& json_title_info, ModBookInfo* bookDescri
 
     // Альтернативные названия
     bookDescriptor->alternative_titles = j.contains("otherNames") ? j.at("otherNames").get<std::vector<std::string>>() : std::vector<std::string>{};
-    std::cout << "Alt name: " << bookDescriptor->alternative_titles[0] << std::endl;
 
     // Страна происхождения
     bookDescriptor->country_of_origin_of_the_book = j.contains("type")? j["type"].at("label").get<std::string>() : std::string{}; //j.at("type").value("label", std::string{});
@@ -279,7 +278,7 @@ void prc_bookInfo_from_json(const json& json_title_info, ModBookInfo* bookDescri
 
     // Франшиза. Или же пародия
     //std::vector<std::string> franchise = {j.contains("franchise") ? j["franchise"].at("name").get<std::string>() : std::string{}};
-
+    std::cout << "LOG: Create book description complite" << std::endl;
 }
 
 
@@ -287,6 +286,8 @@ void prc_bookInfo_from_json(const json& json_title_info, ModBookInfo* bookDescri
  * Tut proishodit razbor json dannyh dla 1 chapter. 
  */
 ChapterData prc_one_chapters_from_json(json json_chapter_info){
+    std::cout << "LOG: Create chapter data struct start" << std::endl;
+
     ChapterData chapterDat;
 
     json j = json_chapter_info.at("data");
@@ -303,10 +304,13 @@ ChapterData prc_one_chapters_from_json(json json_chapter_info){
     };
     */
 
-    chapterDat.branch_id = j.at("branch_id").get<std::string>();
+    chapterDat.branch_id = std::to_string(j.at("branch_id").get<int>());
     chapterDat.created_at = j.at("created_at").get<std::string>();
     chapterDat.name = j.at("name").get<std::string>();
-    chapterDat.raw_content = j.at("content").get<std::vector<DocBlock>>();
 
+    // Парсит именно список массивов [{...}]
+    chapterDat.raw_content = j.at("content").at("content").get<std::vector<DocBlock>>();
+
+    std::cout << "LOG: Create chapter data struct complite" << std::endl;
     return chapterDat;
 }
