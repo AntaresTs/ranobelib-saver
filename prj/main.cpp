@@ -85,9 +85,11 @@ void get_req(cpr::Session* session, const std::string& url){
 
 }
 
-/// @brief Функция для загрузки/выгрузки кэша
+/*
+ * @brief Функция для загрузки/выгрузки кэша
+ * Работа с кешем. Функция для отлаживания работы с json, чтобы не отправлять запросы к сайту
+ */
 json cash_prc(const std::string& fname, const json& load_data = json{}) {
-    /// @brief Работа с кешем. Функция для отлаживания работы с json, чтобы не отправлять запросы к сайту
 
     fs::path cash_dir = "tmp/cash";
     fs::create_directories(cash_dir);
@@ -118,41 +120,21 @@ json cash_prc(const std::string& fname, const json& load_data = json{}) {
     }
 }
 
-/// @brief пример парсинга данных и записи их в кэш.
 /// TODO: Реализовать динамическую задержку!
-void exemple_1(cpr::Session* session, const std::string& slug_url){
-    ChapterData test_cd (1, 60, 0); 
-    json rq1 = get_title_info(session, slug_url);
-    json rq2 = get_chapter_content(session, slug_url, 1, 60);
-
-    if(rq1.empty() ||  rq2.empty()) {
-        std::cout << "==== При получении данных произошла ошибка ====" << std::endl;
-        return;
-    } else {
-        std::cout << "==== Данные успешно получены ====" << std::endl;
-        std::string chapter_info_cach_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
-
-        cash_prc("title_info_cach_fname.json", rq1);
-        cash_prc(chapter_info_cach_fname, rq2);
-
-        std::cout << "Данные закешированны" << std::endl;
-
-        // Демонстрация получения данных из кэша
-        std::cout << cash_prc(chapter_info_cach_fname) << std::endl;
-    }
-}
 
 /// @breif Получение сырых данных
 std::vector<json> get_data(cpr::Session* session, ModBookInfo* bookDescr){
-    ChapterData test_cd (1, 60, 0); 
+    int chapter_num = 60;
+    int volume_num = 1;
+
     std::string cash_titl_info_fname = "title_info_cach_fname.json";
-    std::string cash_chapter_info_fname = std::format("chapter_data_cash-V{}Ch{}.json", test_cd.volume, test_cd.chapter);
+    std::string cash_chapter_info_fname = std::format("chapter_data_cash-V{}Ch{}.json", volume_num, chapter_num);
    
     json chapter_raw_json = cash_prc(cash_chapter_info_fname);
     json title_raw_json = cash_prc(cash_titl_info_fname);
 
     if(chapter_raw_json.empty()){
-        json rq2 = get_chapter_content(session, bookDescr->slug_url, test_cd.volume, test_cd.chapter);
+        json rq2 = get_chapter_content(session, bookDescr->slug_url, volume_num, chapter_num);
         chapter_raw_json = cash_prc(cash_chapter_info_fname, rq2);
     }
 
@@ -189,10 +171,12 @@ int main(){
     parserInit(session);
 
     // ===== тестирование дескриптора
-#if 1
     std::vector<json> test_data = get_data(&session, &bookDescr);
     prc_bookInfo_from_json(test_data[1], &bookDescr);
 
+    prc_one_chapters_from_json(test_data[0])
+
+#if 0
     std::cout <<
         "==========================\n"
         "languages: " << bookDescr.languages[0] << "\n"
