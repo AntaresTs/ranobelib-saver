@@ -11,8 +11,8 @@ namespace fs = std::filesystem;
 int parserInit(cpr::Session& session, const std::string& mangalib_session = "", const std::string& xsrf_token = "") {
 
     cpr::Cookies cookies = {
-        {"mangalib_session", mangalib_session},
-        {"XSRF-TOKEN", xsrf_token}
+        {"mangalib_session", mangalib_session.empty() ? "" : mangalib_session},
+        {"XSRF-TOKEN", xsrf_token.empty() ? "" : xsrf_token}
     };
 
     cpr::Header headers = {
