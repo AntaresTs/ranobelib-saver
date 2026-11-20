@@ -43,6 +43,13 @@ struct ModBookInfo : LibBook {
     std::vector<ChapterData> chapters;
 }; 
 
+// TODO: Test function
+std::string convert_vector_docBlock_to_text(const std::vector<DocBlock>& raw_content);
+
+// TODO: Test function
+ChapterData prc_one_chapters_from_json(json json_chapter_info);
+
 /// @brief распарсинг json. Запись в структуру информации о книге
 void prc_bookInfo_from_json(const json& json_title_info, ModBookInfo* bookDescriptor);
+
 

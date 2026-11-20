@@ -160,10 +160,8 @@ std::vector<json> get_data(cpr::Session* session, ModBookInfo* bookDescr){
 //    std::string slug_url;
 //}; 
 
-int main(){
+void test(std::string url){
 
-    std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
-    fs::path tmp_dir = "tmp";
     ModBookInfo bookDescr {.slug_url=get_slug_url_from_url(url)};
 
     cpr::Session session;
@@ -174,11 +172,10 @@ int main(){
     std::vector<json> test_data = get_data(&session, &bookDescr);
     prc_bookInfo_from_json(test_data[1], &bookDescr);
 
-    prc_one_chapters_from_json(test_data[0])
+    ChapterData chapterData = prc_one_chapters_from_json(test_data[0]);
 
-#if 0
     std::cout <<
-        "==========================\n"
+        "============ TEST BookDescriptor ==============\n"
         "languages: " << bookDescr.languages[0] << "\n"
         "title: " << bookDescr.title << "\n"
         "original title: " << bookDescr.original_title << "\n"
@@ -201,7 +198,36 @@ int main(){
     }
     std::cout << genres << std::endl;
 
-#endif
+    // --------
+    
+    struct ChapterData {
+        std::string name;
+        int volume;
+        int chapter;
+        int branch_id;
+        std::string created_at;
+        std::vector<std::string> translate_teems;
+        std::vector<DocBlock> raw_content;          ///< Suda budet pomeshtsa soderjimoye chapter in raw format
+    };
+
+    std::cout <<
+        "========== TEST Chapter Data ===========\n"
+        "Chapter name: " << chapterData.name << "\n"
+        "Volume num: " << chapterData.volume << "\n"
+        "Chapter num: " << chapterData.chapter << "\n"
+        "Branch_id: " << chapterData.branch_id << "\n"
+        "Create at: " << chapterData.created_at << "\n"
+        "Content:\n" << convert_vector_docBlock_to_text(chapterData.raw_content)
+    << std::endl;
+
+}
+
+int main(){
+
+    std::string url = "https://ranobelib.me/ru/book/203736--seoul-object-story";
+    fs::path tmp_dir = "tmp";
+
+    test(url);
 
     // =====
     return 0;

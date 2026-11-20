@@ -308,36 +308,5 @@ ChapterData prc_one_chapters_from_json(json json_chapter_info){
     chapterDat.name = j.at("name").get<std::string>();
     chapterDat.raw_content = j.at("content").get<std::vector<DocBlock>>();
 
-    /*
-     * 
-        "attachments": [],
-        "branch_id": 22611,
-        "bundle": null,
-        "bundle_id": null,
-
-        "content"
-
-        "created_at": "2025-01-06T13:32:18.000000Z",
-        "expired_at": null,
-        "expired_type": 0,
-        "id": 3407487,
-        "is_liked": false,
-        "is_viewed": false,
-        "is_viewed_last_at": null,
-        "likes_count": 65,
-        "manga_id": 203736,
-        "model": "chapter",
-
-        "name": "Тематический парк. Эпилог (2)",
-        "number": "60",
-        "number_secondary": "1",
-        "publish_at": null,
-        "slug": "3407487",
-
-        "type": "chapter",
-        "volume": "1"
-
-    */
-
     return chapterDat;
 }
