@@ -12,7 +12,9 @@ find_package(cpr REQUIRED)
 find_package(CURL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
-add_executable(app.run main.cpp)
+add_executable(app.run main.cpp
+    src/parsejson.cpp
+)
 target_link_libraries(app.run PRIVATE
     storage_structures
     cpr::cpr
