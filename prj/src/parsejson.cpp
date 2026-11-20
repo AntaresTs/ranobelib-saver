@@ -43,19 +43,6 @@ struct ModBookInfo : LibBook {
     std::vector<ChapterData> chapters;
 }; 
 
-/**
- * @brief функция для конвертации из json в нужную структуру
- */
-void from_json(const json& j, DocBlock& b){
-    b = parse_one_block(j);
-}
-
-/**
- * @brief функция для конвертации из структуры в json
- */
-void to_json(json& j, const DocBlock& b) {
-    j = json{{"type", b.type}, {"text", b.text}};
-}
 
 /**
  * @brief (AI) Рекурсивно извлекает текст из узла документного дерева.
@@ -148,7 +135,7 @@ std::vector<DocBlock> parse_doc_blocks(const std::vector<json>& content) {
  * не молча терял данные. Если хотите «пропускать» неподдерживаемые узлы,
  * используйте вариант `parse_doc_blocks` ниже.
  */
-static DocBlock parse_one_block(const json& node) {
+DocBlock parse_one_block(const json& node) {
     // Пропускаем некорректные узлы: не объект или без поля "type".
     if (!node.is_object() || !node.contains("type") || !node["type"].is_string()) {
         throw std::invalid_argument("parse_one_block: node without string 'type'");
@@ -201,6 +188,24 @@ std::string convert_vector_docBlock_to_text(const std::vector<DocBlock>& raw_con
     return content;
 }
 
+/**
+ * @brief функция для конвертации из json в нужную структуру
+ */
+void from_json(const json& j, DocBlock& b){
+    b = parse_one_block(j);
+}
+
+/**
+ * @brief функция для конвертации из структуры в json
+ */
+void to_json(json& j, const DocBlock& b) {
+    j = json{{"type", b.type}, {"text", b.text}};
+}
+/*
+ * ==================================
+ * Dalee parsing json
+ * ==================================
+ */
 
 /// @brief распарсинг json. Запись в структуру информации о книге
 void prc_bookInfo_from_json(const json& json_title_info, ModBookInfo* bookDescriptor){
@@ -280,7 +285,7 @@ void prc_bookInfo_from_json(const json& json_title_info, ModBookInfo* bookDescri
  * Tut proishodit razbor json dannyh dla 1 chapter. 
  */
 ChapterData prc_one_chapters_from_json(json json_chapter_info){
-    ChapterData chapDat;
+    ChapterData chapterDat;
 
     json j = json_chapter_info.at("data");
 
@@ -315,5 +320,5 @@ ChapterData prc_one_chapters_from_json(json json_chapter_info){
 
     */
 
-    return chapDat
+    return chapterDat;
 }

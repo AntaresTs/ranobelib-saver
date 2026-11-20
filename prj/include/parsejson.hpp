@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -9,20 +11,6 @@ using json = nlohmann::json;
  * Parser function:
  * Json -> parsFunction() -> struct
  */
-
-
-/**
- * @brief (AI) Один элемент разобранного документа.
- *
- * Хранит "плоское" представление узла: тип (например, "paragraph" или
- * "horizontalRule") и уже склеенный текст. Для картинок в будущем сюда
- * можно добавить поле `url`/`path` и т.п.
- */
-struct DocBlock {
-    std::string type;       ///< Тип блока: "paragraph", "horizontalRule", ...
-    std::string text;       ///< Склеенный текст (для paragraph); для hr — "---".
-    std::string image_url;
-};
 
 /**
  * @brief хранит данные о конкретной главе

@@ -7,13 +7,16 @@
 #include <filesystem>
 #include <fstream>
 #include "lib/StorageStructures.hpp"     // Структура для descriptor
+#include "parsejson.hpp"
 
 using json = nlohmann::json;
 namespace fs = std::filesystem;
 
 // ====================================
 
+# if 0
 
+# endif
 
 // Инициилизация парсера
 void parserInit(cpr::Session* session, const cpr::Cookies& cookies);
